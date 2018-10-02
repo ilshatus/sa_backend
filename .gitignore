@@ -1,0 +1,6 @@
+.idea/
+target
+application.properties
+tmp/
+var/
+syncright-backend.iml
