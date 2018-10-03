@@ -12,6 +12,13 @@
     <artifactId>idc-service</artifactId>
 
     <dependencies>
+
+        <!--Validator-->
+        <dependency>
+            <groupId>commons-validator</groupId>
+            <artifactId>commons-validator</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>org.quartz-scheduler</groupId>
             <artifactId>quartz</artifactId>

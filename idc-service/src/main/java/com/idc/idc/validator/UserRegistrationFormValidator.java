@@ -4,13 +4,11 @@ import com.idc.idc.dto.form.UserRegistrationForm;
 import com.idc.idc.repository.UserRepository;
 import com.idc.idc.response.HttpResponseStatus;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.validator.routines.EmailValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
-
-import javax.mail.internet.AddressException;
-import javax.mail.internet.InternetAddress;
 
 @Component
 public class UserRegistrationFormValidator implements Validator {
@@ -48,20 +46,9 @@ public class UserRegistrationFormValidator implements Validator {
     }
 
     private void validateEmail(Errors errors, UserRegistrationForm form) {
-        if (!isValidEmail(form.getEmail())) {
+        if (!EmailValidator.getInstance().isValid(form.getEmail())) {
             errors.reject(UserRegistrationForm.EMAIL, HttpResponseStatus.INVALID_PARAM);
         }
-    }
-
-    private boolean isValidEmail(String email) {
-        boolean result = true;
-        try {
-            InternetAddress emailAddress = new InternetAddress(email);
-            emailAddress.validate();
-        } catch (AddressException ex) {
-            result = false;
-        }
-        return result;
     }
 
     private void validateUserExisting(Errors errors, UserRegistrationForm form) {
