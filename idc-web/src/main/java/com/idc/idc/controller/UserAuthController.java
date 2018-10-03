@@ -111,7 +111,6 @@ public class UserAuthController {
             LOGGER.info("Sign in failed: invalid account [{}]", email);
             return new ResponseEntity<>(new Response<>(null, HttpResponseStatus.INVALID_PARAM), HttpStatus.BAD_REQUEST);
         }
-        email = StringUtils.lowerCase(email);
         try {
             TokenJson authentication = authenticate(email, password, false);
             return new ResponseEntity<>(new Response<>(authentication), HttpStatus.OK);
