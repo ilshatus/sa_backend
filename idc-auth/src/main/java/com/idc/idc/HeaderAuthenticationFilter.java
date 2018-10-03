@@ -30,7 +30,7 @@ import java.util.List;
 @Getter
 public class HeaderAuthenticationFilter extends FilterSecurityInterceptor {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(UserService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(HeaderAuthenticationFilter.class);
 
     private AuthTokenService authTokenService;
     private UserService userService;
