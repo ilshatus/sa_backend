@@ -2,7 +2,7 @@ package com.idc.idc.provider;
 
 import com.idc.idc.AuthenticationImpl;
 import com.idc.idc.CurrentUser;
-import com.idc.idc.model.User;
+import com.idc.idc.model.users.Customer;
 import com.idc.idc.service.UserService;
 import com.idc.idc.util.PasswordUtil;
 import org.apache.commons.lang3.StringUtils;
@@ -45,18 +45,18 @@ public class UserPasswordAuthProvider implements AuthenticationProvider {
             throw new BadCredentialsException("empty-param");
         }
 
-        User user = userService.getUserByEmail(email);
-        if (user == null) {
-            throw new BadCredentialsException("user-not-found");
+        Customer customer = userService.getCustomerByEmail(email);
+        if (customer == null) {
+            throw new BadCredentialsException("customer-not-found");
         }
-        if (!(Objects.equals(passwordUtil.getHash(password), user.getPasswordHash()))) {
+        if (!(Objects.equals(passwordUtil.getHash(password), customer.getPasswordHash()))) {
             throw new BadCredentialsException("wrong-passwordHash");
         }
 
-        Long userId = user.getId();
+        Long userId = customer.getId();
         List<GrantedAuthority> authorityList = AuthorityUtils.createAuthorityList();
-        authorityList.add(new SimpleGrantedAuthority(user.getRole().name()));
-        authorityList.add(new SimpleGrantedAuthority(user.getState().name()));
+        authorityList.add(new SimpleGrantedAuthority(customer.getRole().name()));
+        authorityList.add(new SimpleGrantedAuthority(customer.getState().name()));
         UserDetails currentUser = CurrentUser
                 .builder()
                 .id(userId)

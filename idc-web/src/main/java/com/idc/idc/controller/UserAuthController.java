@@ -33,7 +33,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 
-@Api(tags = {"User.Auth"})
+@Api(tags = {"Customer.Auth"})
 @RestController
 @RequestMapping(UserAuthController.ROOT_URL)
 public class UserAuthController {
@@ -82,7 +82,7 @@ public class UserAuthController {
                     new Response<>(registrationJson, HttpResponseStatus.VALIDATION_ERROR), HttpStatus.BAD_REQUEST);
         }
         try {
-            userService.registerUser(userRegistrationForm);
+            userService.registerCustomer(userRegistrationForm);
             TokenJson tokenJson = authenticate(email, password, true);
             registrationJson.setSuccess(true);
             registrationJson.setToken(tokenJson);

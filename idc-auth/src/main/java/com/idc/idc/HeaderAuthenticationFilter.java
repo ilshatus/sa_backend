@@ -1,7 +1,7 @@
 package com.idc.idc;
 
 import com.idc.idc.exception.NotFoundException;
-import com.idc.idc.model.User;
+import com.idc.idc.model.users.Customer;
 import com.idc.idc.service.UserService;
 import com.idc.idc.service.AuthTokenService;
 import lombok.Getter;
@@ -58,16 +58,16 @@ public class HeaderAuthenticationFilter extends FilterSecurityInterceptor {
                 logger.info("Not valid token");
             }
         }
-        User user = null;
+        Customer customer = null;
         try {
-            user = userService.getUser(userId);
+            customer = userService.getCustomer(userId);
         } catch (NotFoundException e) {
-            LOGGER.info("User with id {} not found", userId);
+            LOGGER.info("Customer with id {} not found", userId);
         }
-        if (user != null) {
+        if (customer != null) {
             List<GrantedAuthority> authorityList = AuthorityUtils.createAuthorityList();
-            authorityList.add(new SimpleGrantedAuthority(user.getRole().name()));
-            authorityList.add(new SimpleGrantedAuthority(user.getState().name()));
+            authorityList.add(new SimpleGrantedAuthority(customer.getRole().name()));
+            authorityList.add(new SimpleGrantedAuthority(customer.getState().name()));
             UserDetails userDetails = CurrentUser
                     .builder()
                     .id(userId)

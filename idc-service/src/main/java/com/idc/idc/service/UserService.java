@@ -1,15 +1,32 @@
 package com.idc.idc.service;
 
-import com.google.inject.ImplementedBy;
 import com.idc.idc.dto.form.UserRegistrationForm;
-import com.idc.idc.model.User;
+import com.idc.idc.model.users.Customer;
+import com.idc.idc.model.users.Driver;
+import com.idc.idc.model.users.Operator;
 
 public interface UserService {
-    void registerUser(UserRegistrationForm userRegistrationForm);
+    void registerCustomer(UserRegistrationForm userRegistrationForm);
 
-    User getUser(Long userId);
+    void registerOperator(UserRegistrationForm userRegistrationForm);
 
-    User getUserByEmail(String email);
+    void registerDriver(UserRegistrationForm userRegistrationForm);
 
-    User submitUser(User user);
+    Customer getCustomer(Long customerId);
+
+    Operator getOperator(Long operatorId);
+
+    Driver getDriver(Long driverId);
+
+    Customer getCustomerByEmail(String email);
+
+    Operator getOperatorByEmail(String email);
+
+    Driver getDriverByEmail(String email);
+
+    Customer submitCustomer(Customer customer);
+
+    Operator submitOperator(Operator customer);
+
+    Driver submitDriver(Driver customer);
 }

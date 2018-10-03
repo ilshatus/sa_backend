@@ -1,7 +1,7 @@
 package com.idc.idc.validator;
 
 import com.idc.idc.dto.form.UserRegistrationForm;
-import com.idc.idc.repository.UserRepository;
+import com.idc.idc.repository.CustomerRepository;
 import com.idc.idc.response.HttpResponseStatus;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.validator.routines.EmailValidator;
@@ -14,11 +14,11 @@ import org.springframework.validation.Validator;
 public class UserRegistrationFormValidator implements Validator {
     private static final int MIN_PASSWORD_LENGTH = 6;
 
-    private final UserRepository userRepository;
+    private final CustomerRepository customerRepository;
 
     @Autowired
-    public UserRegistrationFormValidator(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public UserRegistrationFormValidator(CustomerRepository customerRepository) {
+        this.customerRepository = customerRepository;
     }
 
     @Override
@@ -52,7 +52,7 @@ public class UserRegistrationFormValidator implements Validator {
     }
 
     private void validateUserExisting(Errors errors, UserRegistrationForm form) {
-        if (userRepository.findOneByEmail(form.getEmail().toLowerCase()).isPresent()) {
+        if (customerRepository.findOneByEmail(form.getEmail().toLowerCase()).isPresent()) {
             errors.reject(UserRegistrationForm.EMAIL, HttpResponseStatus.DUPLICATE_EMAIL);
         }
     }

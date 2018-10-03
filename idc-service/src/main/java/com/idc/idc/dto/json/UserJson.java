@@ -1,6 +1,6 @@
 package com.idc.idc.dto.json;
 
-import com.idc.idc.model.User;
+import com.idc.idc.model.users.Customer;
 import com.idc.idc.model.enums.UserState;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,11 +16,11 @@ public class UserJson {
 
     private UserState state;
 
-    public static UserJson mapFromUser(User user) {
+    public static UserJson mapFromUser(Customer customer) {
         return UserJson.builder()
-                .id(user.getId())
-                .email(user.getEmail())
-                .state(user.getState())
+                .id(customer.getId())
+                .email(customer.getEmail())
+                .state(customer.getState())
                 .build();
     }
 }
