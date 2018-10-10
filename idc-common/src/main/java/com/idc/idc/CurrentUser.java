@@ -17,8 +17,8 @@ public class CurrentUser extends User {
     @Builder
     public CurrentUser(
             Long id,
-            String username,
             UserType userType,
+            String username,
             boolean enabled,
             boolean accountNonLocked,
             boolean accountNonExpired,

@@ -2,7 +2,6 @@ package com.idc.idc.service.impl;
 
 import com.idc.idc.exception.NotFoundException;
 import com.idc.idc.model.Order;
-import com.idc.idc.model.User;
 import com.idc.idc.repository.OrderRepository;
 import com.idc.idc.service.OrderService;
 import lombok.extern.slf4j.Slf4j;
@@ -13,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
-import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Slf4j
 @Service

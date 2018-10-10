@@ -39,7 +39,10 @@ public class AuthTokenServiceImpl implements AuthTokenService {
     public User getUserId(String authToken) {
         try {
             DefaultClaims claims = (DefaultClaims) Jwts.parser().setSigningKey(JWT_TOKEN_KEY).parse(authToken).getBody();
-            Long id = (Long) claims.get(USER_ID);
+            Long id;
+            if (claims.get(USER_ID) instanceof Integer)
+                id = ((Integer) claims.get(USER_ID)).longValue();
+            else id = (Long) claims.get(USER_ID);
             UserType userType = UserType.valueOf(claims.get(USER_TYPE).toString());
             return new User(id, userType);
         } catch (Exception e) {
