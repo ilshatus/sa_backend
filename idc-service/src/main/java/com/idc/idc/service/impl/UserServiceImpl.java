@@ -3,11 +3,12 @@ package com.idc.idc.service.impl;
 import com.idc.idc.dto.form.UserRegistrationForm;
 import com.idc.idc.exception.NotFoundException;
 import com.idc.idc.model.users.Customer;
-import com.idc.idc.model.enums.UserRole;
 import com.idc.idc.model.enums.UserState;
 import com.idc.idc.model.users.Driver;
 import com.idc.idc.model.users.Operator;
 import com.idc.idc.repository.CustomerRepository;
+import com.idc.idc.repository.DriverRepository;
+import com.idc.idc.repository.OperatorRepository;
 import com.idc.idc.service.UserService;
 import com.idc.idc.util.PasswordUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -24,18 +25,24 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 @Transactional
 public class UserServiceImpl implements UserService {
     private CustomerRepository customerRepository;
+    private DriverRepository driverRepository;
+    private OperatorRepository operatorRepository;
     private PasswordUtil passwordUtil;
     
     @Autowired
     public UserServiceImpl(CustomerRepository customerRepository,
+                           DriverRepository driverRepository,
+                           OperatorRepository operatorRepository,
                            PasswordUtil passwordUtil) {
         this.customerRepository = customerRepository;
+        this.driverRepository = driverRepository;
+        this.operatorRepository = operatorRepository;
         this.passwordUtil = passwordUtil;
     }
 
     @Override
     public void registerCustomer(UserRegistrationForm userRegistrationForm) {
-        Customer customer = userRegistrationForm.toUser();
+        Customer customer = userRegistrationForm.toCustomer();
         customer.setPasswordHash(passwordUtil.getHash(userRegistrationForm.getPassword()));
         customer.setState(UserState.REGISTERED);
         submitCustomer(customer);
@@ -66,41 +73,61 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void registerOperator(UserRegistrationForm userRegistrationForm) {
-
+        Operator operator = userRegistrationForm.toOperator();
+        operator.setPasswordHash(passwordUtil.getHash(userRegistrationForm.getPassword()));
+        submitOperator(operator);
     }
 
     @Override
     public void registerDriver(UserRegistrationForm userRegistrationForm) {
-
+        Driver driver = userRegistrationForm.toDriver();
+        driver.setPasswordHash(passwordUtil.getHash(userRegistrationForm.getPassword()));
+        submitDriver(driver);
     }
 
     @Override
     public Operator getOperator(Long operatorId) {
-        return null;
+        if (operatorId == null) {
+            return null;
+        }
+        Optional<Operator> oneById = operatorRepository.findOneById(operatorId);
+        return oneById.orElseThrow(() -> new NotFoundException(String.format("Operator %d not found", operatorId)));
     }
 
     @Override
     public Driver getDriver(Long driverId) {
-        return null;
+        if (driverId == null) {
+            return null;
+        }
+        Optional<Driver> oneById = driverRepository.findOneById(driverId);
+        return oneById.orElseThrow(() -> new NotFoundException(String.format("Driver %d not found", driverId)));
     }
 
     @Override
     public Operator getOperatorByEmail(String email) {
-        return null;
+        if (isBlank(email)) {
+            return null;
+        }
+        Optional<Operator> oneByEmail = operatorRepository.findOneByEmail(email);
+        return oneByEmail.orElseThrow(() -> new NotFoundException("Operator not found by email " + email));
     }
 
     @Override
     public Driver getDriverByEmail(String email) {
-        return null;
+        if (isBlank(email)) {
+            return null;
+        }
+        Optional<Driver> oneByEmail = driverRepository.findOneByEmail(email);
+        return oneByEmail.orElseThrow(() -> new NotFoundException("Driver not found by email " + email));
     }
 
     @Override
-    public Operator submitOperator(Operator customer) {
-        return null;
+    public Operator submitOperator(Operator operator) {
+        return operatorRepository.save(operator);
     }
 
     @Override
-    public Driver submitDriver(Driver customer) {
-        return null;
+    public Driver submitDriver(Driver driver) {
+        return driverRepository.save(driver);
     }
 }
