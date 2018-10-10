@@ -14,20 +14,20 @@ import javax.persistence.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Task extends AbstractAuditableEntity{
-    public static final String DRIVER_ID = "driver_id";
-    public static final String ORDER_ID = "order_id";
-    public static final String STATUS = "task_status";
+public class Task extends AbstractAuditableEntity {
+    private static final String ORDER_ID = "order_id";
+    private static final String DRIVER_ID = "driver_id";
+    private static final String TASK_STATUS = "task_status";
 
-    @Column(name = STATUS)
-    @Enumerated(EnumType.STRING)
-    private TaskStatus status;
+    @ManyToOne
+    @JoinColumn(name = ORDER_ID)
+    private Order order;
 
     @ManyToOne
     @JoinColumn(name = DRIVER_ID)
     private Driver driver;
 
-    @ManyToOne
-    @JoinColumn(name = ORDER_ID)
-    private Order order;
+    @Column(name = TASK_STATUS)
+    @Enumerated(EnumType.STRING)
+    private TaskStatus status;
 }

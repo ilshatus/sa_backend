@@ -1,12 +1,10 @@
 package com.idc.idc.model.users;
 
 import com.idc.idc.model.abstracts.AbstractUserEntity;
+import com.idc.idc.model.embeddable.CurrentLocation;
 import lombok.*;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Index;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Table(name = "drivers", indexes = {
         @Index(name = "email_index", columnList = Customer.EMAIL)
@@ -26,4 +24,7 @@ public class Driver extends AbstractUserEntity {
 
     @Column(name = NAME, length = 250)
     private String name;
+
+    @Embedded
+    private CurrentLocation location;
 }

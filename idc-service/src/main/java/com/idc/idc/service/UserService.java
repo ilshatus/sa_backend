@@ -5,6 +5,8 @@ import com.idc.idc.model.users.Customer;
 import com.idc.idc.model.users.Driver;
 import com.idc.idc.model.users.Operator;
 
+import java.util.List;
+
 public interface UserService {
     void registerCustomer(UserRegistrationForm userRegistrationForm);
 
@@ -17,6 +19,8 @@ public interface UserService {
     Operator getOperator(Long operatorId);
 
     Driver getDriver(Long driverId);
+
+    List<Driver> getAllDrivers();
 
     Customer getCustomerByEmail(String email);
 

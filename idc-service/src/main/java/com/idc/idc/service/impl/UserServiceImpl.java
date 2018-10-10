@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -119,6 +120,11 @@ public class UserServiceImpl implements UserService {
         }
         Optional<Driver> oneById = driverRepository.findOneById(driverId);
         return oneById.orElseThrow(() -> new NotFoundException(String.format("Driver %d not found", driverId)));
+    }
+
+    @Override
+    public List<Driver> getAllDrivers() {
+        return driverRepository.findAll();
     }
 
     @Override

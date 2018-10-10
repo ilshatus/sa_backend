@@ -5,12 +5,12 @@ import com.idc.idc.model.Task;
 import com.idc.idc.model.enums.TaskStatus;
 import com.idc.idc.model.users.Driver;
 
-import java.util.Set;
+import java.util.List;
 
 public interface TaskService {
-    Task submitTask(Task task);
     Task getTask(Long taskId);
-    Set<Task> getTasksByDriver(Driver driver);
-    Set<Task> getTasksByStatus(TaskStatus status);
-    Set<Task> getTasksByOrder(Order order);
+    List<Task> getTasksByDriver(Driver driver);
+    List<Task> getTasksByStatus(TaskStatus status);
+    Task submitTask(Task task);
+    Task getTaskByOrderAndStatus(Order order, TaskStatus status);
 }
