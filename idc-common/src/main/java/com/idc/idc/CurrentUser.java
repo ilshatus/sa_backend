@@ -11,18 +11,14 @@ import java.util.Collection;
 @Setter
 @Getter
 public class CurrentUser extends User {
-    public static final String USER_AUTHORITY = "USER";
-    public static final String ANONYMOUS_AUTHORITY = "ANONYMOUS";
-    private static final long serialVersionUID = 1299142021617783779L;
-
     private Long id;
-    private String clientId;
+    private UserType userType;
 
     @Builder
     public CurrentUser(
             Long id,
             String username,
-            String clientId,
+            UserType userType,
             boolean enabled,
             boolean accountNonLocked,
             boolean accountNonExpired,
@@ -31,6 +27,6 @@ public class CurrentUser extends User {
 
         super(username, "", enabled, accountNonExpired, credentialsNonExpired, accountNonLocked, authorities);
         setId(id);
-        setClientId(clientId);
+        setUserType(userType);
     }
 }

@@ -1,11 +1,9 @@
 package com.idc.idc.validator;
 
 import com.idc.idc.dto.form.UserRegistrationForm;
-import com.idc.idc.repository.CustomerRepository;
 import com.idc.idc.response.HttpResponseStatus;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.validator.routines.EmailValidator;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
@@ -13,13 +11,6 @@ import org.springframework.validation.Validator;
 @Component
 public class UserRegistrationFormValidator implements Validator {
     private static final int MIN_PASSWORD_LENGTH = 6;
-
-    private final CustomerRepository customerRepository;
-
-    @Autowired
-    public UserRegistrationFormValidator(CustomerRepository customerRepository) {
-        this.customerRepository = customerRepository;
-    }
 
     @Override
     public boolean supports(Class<?> aClass) {
@@ -33,7 +24,6 @@ public class UserRegistrationFormValidator implements Validator {
         if (!errors.hasErrors()) {
             validatePassword(errors, registrationForm);
             validateEmail(errors, registrationForm);
-            validateUserExisting(errors, registrationForm);
         }
     }
 
@@ -48,12 +38,6 @@ public class UserRegistrationFormValidator implements Validator {
     private void validateEmail(Errors errors, UserRegistrationForm form) {
         if (!EmailValidator.getInstance().isValid(form.getEmail())) {
             errors.reject(UserRegistrationForm.EMAIL, HttpResponseStatus.INVALID_PARAM);
-        }
-    }
-
-    private void validateUserExisting(Errors errors, UserRegistrationForm form) {
-        if (customerRepository.findOneByEmail(form.getEmail().toLowerCase()).isPresent()) {
-            errors.reject(UserRegistrationForm.EMAIL, HttpResponseStatus.DUPLICATE_EMAIL);
         }
     }
 

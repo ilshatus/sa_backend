@@ -41,60 +41,51 @@ public class HeaderAuthenticationFilter extends FilterSecurityInterceptor {
         HttpServletResponse response = (HttpServletResponse) res;
 
         SecurityContext securityContext = loadSecurityContext(request);
-        SecurityContextHolder.setContext(securityContext);
+
+        if (securityContext != null)
+            SecurityContextHolder.setContext(securityContext);
 
         chain.doFilter(request, response);
     }
 
     private SecurityContext loadSecurityContext(HttpServletRequest request) {
-        Long userId = null;
         String xAuth = request.getHeader("Authorization");
-        String clientId = request.getHeader("X-ClientId");
+        User user = null;
 
-        if (StringUtils.isNotBlank(xAuth)) {
-            try {
-                userId = authTokenService.getUserId(xAuth);
-            } catch (IndexOutOfBoundsException e) {
-                logger.info("Not valid token");
-            }
-        }
-        Customer customer = null;
         try {
-            customer = userService.getCustomer(userId);
+            user = authTokenService.getUserId(xAuth);
+        } catch (IndexOutOfBoundsException e) {
+            logger.info("Not valid token");
+            return null;
+        }
+
+        try {
+            switch (user.getUserType()) {
+                case CUSTOMER:
+                    userService.getCustomer(user.getId());
+                    break;
+                case DRIVER:
+                    userService.getDriver(user.getId());
+                    break;
+                case OPERATOR:
+                    userService.getOperator(user.getId());
+            }
         } catch (NotFoundException e) {
-            LOGGER.info("Customer with id {} not found", userId);
+            LOGGER.info("{} with id {} not found", user.getUserType().name(), user.getId());
+            return null;
         }
-        if (customer != null) {
-            List<GrantedAuthority> authorityList = AuthorityUtils.createAuthorityList();
-            authorityList.add(new SimpleGrantedAuthority(customer.getRole().name()));
-            authorityList.add(new SimpleGrantedAuthority(customer.getState().name()));
-            UserDetails userDetails = CurrentUser
-                    .builder()
-                    .id(userId)
-                    .username(userId != null ? userId.toString() : null)
-                    .clientId(clientId)
-                    .enabled(true)
-                    .accountNonLocked(true)
-                    .accountNonExpired(true)
-                    .credentialsNonExpired(true)
-                    .authorities(authorityList)
-                    .build();
 
-            return new CustomSecurityContext(userDetails);
-        } else {
-            UserDetails userDetails = CurrentUser
-                    .builder()
-                    .id(null)
-                    .username(CurrentUser.ANONYMOUS_AUTHORITY)
-                    .clientId(clientId)
-                    .enabled(true)
-                    .accountNonLocked(true)
-                    .accountNonExpired(true)
-                    .credentialsNonExpired(true)
-                    .authorities(AuthorityUtils.createAuthorityList(CurrentUser.ANONYMOUS_AUTHORITY))
-                    .build();
-
-            return new CustomSecurityContext(userDetails);
-        }
+        List<GrantedAuthority> authorityList = AuthorityUtils.createAuthorityList();
+        authorityList.add(new SimpleGrantedAuthority(user.getUserType().name()));
+        UserDetails userDetails = CurrentUser
+                .builder()
+                .id(user.getId())
+                .enabled(true)
+                .accountNonLocked(true)
+                .accountNonExpired(true)
+                .credentialsNonExpired(true)
+                .authorities(authorityList)
+                .build();
+        return new CustomSecurityContext(userDetails);
     }
 }

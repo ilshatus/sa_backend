@@ -1,9 +1,10 @@
 package com.idc.idc.service;
 
 
+import com.idc.idc.User;
+
 public interface AuthTokenService {
 
-    String generateToken(Long userId);
-
-    Long getUserId(String authToken);
+    String generateToken(User user);
+    User getUserId(String authToken);
 }
