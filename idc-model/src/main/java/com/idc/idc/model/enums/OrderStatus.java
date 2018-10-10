@@ -1,5 +1,5 @@
 package com.idc.idc.model.enums;
 
 public enum OrderStatus {
-    PENDING_CONFIRMATION, IN_PROGRESS, DELIVERED
+    PENDING_CONFIRMATION, REJECTED, IN_PROGRESS, DELIVERED
 }

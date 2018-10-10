@@ -18,6 +18,8 @@ public class Customer extends AbstractUserEntity {
     public static final String EMAIL = "email";
     public static final String NAME = "name";
     public static final String EMAIL_CONFIRMED = "email_confirmed";
+    public static final String PHONE_NUMBER = "phone_number";
+    public static final String PHONE_NUMBER_CONFIRMED = "phone_number_confirmed";
 
     @Column(name = EMAIL, length = 100, unique = true)
     private String email;
@@ -27,7 +29,10 @@ public class Customer extends AbstractUserEntity {
 
     @Column(name = EMAIL_CONFIRMED)
     private Boolean emailConfirmed;
+
+    @Column(name = PHONE_NUMBER)
+    private String phoneNumber;
+
+    @Column(name = PHONE_NUMBER_CONFIRMED)
+    private String phoneNumberConfirmed;
 }
-
-
-
