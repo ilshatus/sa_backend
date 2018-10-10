@@ -9,7 +9,7 @@ import javax.persistence.MappedSuperclass;
 @Setter
 @Getter
 @MappedSuperclass
-public class AbstractUserEntity extends AbstractAuditableEntity {
+public abstract class AbstractUserEntity extends AbstractAuditableEntity {
     public static final String EMAIL = "email";
     public static final String PASSWORD_HASH = "password_hash";
     public static final String NAME = "name";
