@@ -2,8 +2,8 @@ package com.idc.idc.service.impl;
 
 import com.idc.idc.dto.form.UserRegistrationForm;
 import com.idc.idc.exception.NotFoundException;
+import com.idc.idc.exception.RegistrationException;
 import com.idc.idc.model.users.Customer;
-import com.idc.idc.model.enums.UserState;
 import com.idc.idc.model.users.Driver;
 import com.idc.idc.model.users.Operator;
 import com.idc.idc.repository.CustomerRepository;
@@ -43,9 +43,15 @@ public class UserServiceImpl implements UserService {
     @Override
     public void registerCustomer(UserRegistrationForm userRegistrationForm) {
         Customer customer = userRegistrationForm.toCustomer();
-        customer.setPasswordHash(passwordUtil.getHash(userRegistrationForm.getPassword()));
-        customer.setState(UserState.REGISTERED);
-        submitCustomer(customer);
+        try {
+            getCustomerByEmail(customer.getEmail());
+        } catch (NotFoundException e) {
+            customer.setPasswordHash(passwordUtil.getHash(userRegistrationForm.getPassword()));
+            customer.setEmailConfirmed(false);
+            submitCustomer(customer);
+            return;
+        }
+        throw new RegistrationException(String.format("Customer with email %s already exists", customer.getEmail()));
     }
 
     @Override
@@ -74,15 +80,27 @@ public class UserServiceImpl implements UserService {
     @Override
     public void registerOperator(UserRegistrationForm userRegistrationForm) {
         Operator operator = userRegistrationForm.toOperator();
-        operator.setPasswordHash(passwordUtil.getHash(userRegistrationForm.getPassword()));
-        submitOperator(operator);
+        try {
+            getOperatorByEmail(operator.getEmail());
+        } catch (NotFoundException e) {
+            operator.setPasswordHash(passwordUtil.getHash(userRegistrationForm.getPassword()));
+            submitOperator(operator);
+            return;
+        }
+        throw new RegistrationException(String.format("Operator with email %s already exists", operator.getEmail()));
     }
 
     @Override
     public void registerDriver(UserRegistrationForm userRegistrationForm) {
         Driver driver = userRegistrationForm.toDriver();
-        driver.setPasswordHash(passwordUtil.getHash(userRegistrationForm.getPassword()));
-        submitDriver(driver);
+        try {
+            getDriverByEmail(driver.getEmail());
+        } catch (NotFoundException e) {
+            driver.setPasswordHash(passwordUtil.getHash(userRegistrationForm.getPassword()));
+            submitDriver(driver);
+            return;
+        }
+        throw new RegistrationException(String.format("Driver with email %s already exists", driver.getEmail()));
     }
 
     @Override

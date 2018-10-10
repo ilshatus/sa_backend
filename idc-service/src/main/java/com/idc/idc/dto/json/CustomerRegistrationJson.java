@@ -5,6 +5,6 @@ import lombok.Setter;
 
 @Setter
 @Getter
-public class RegistrationJson extends SimpleOperationStatusJson {
+public class CustomerRegistrationJson extends SimpleOperationStatusJson {
     private TokenJson token;
 }

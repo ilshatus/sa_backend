@@ -41,6 +41,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .addFilter(filter)
                 .authorizeRequests()
                 .antMatchers("/**.js", "/**.html").permitAll()
+                .antMatchers("/v1/admin/**").hasAuthority("ADMIN")
                 .antMatchers("/v1/**").permitAll()
                 .and()
                 .logout().permitAll();
