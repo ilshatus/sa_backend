@@ -1,7 +1,7 @@
 package com.idc.idc;
 
 import com.idc.idc.exception.NotFoundException;
-import com.idc.idc.model.users.Customer;
+import com.idc.idc.model.users.Operator;
 import com.idc.idc.service.UserService;
 import com.idc.idc.service.AuthTokenService;
 import lombok.Getter;
@@ -53,6 +53,10 @@ public class HeaderAuthenticationFilter extends FilterSecurityInterceptor {
         String xAuth = request.getHeader("Authorization");
         User user = null;
 
+        if (StringUtils.isBlank(xAuth)) {
+            return null;
+        }
+
         try {
             user = authTokenService.getUserId(xAuth);
         } catch (IndexOutOfBoundsException e) {
@@ -60,6 +64,7 @@ public class HeaderAuthenticationFilter extends FilterSecurityInterceptor {
             return null;
         }
 
+        List<GrantedAuthority> authorityList = AuthorityUtils.createAuthorityList();
         try {
             switch (user.getUserType()) {
                 case CUSTOMER:
@@ -69,18 +74,20 @@ public class HeaderAuthenticationFilter extends FilterSecurityInterceptor {
                     userService.getDriver(user.getId());
                     break;
                 case OPERATOR:
-                    userService.getOperator(user.getId());
+                    Operator operator = userService.getOperator(user.getId());
+                    if (operator.getAdmin())
+                        authorityList.add(new SimpleGrantedAuthority("ADMIN"));
             }
         } catch (NotFoundException e) {
             LOGGER.info("{} with id {} not found", user.getUserType().name(), user.getId());
             return null;
         }
-
-        List<GrantedAuthority> authorityList = AuthorityUtils.createAuthorityList();
         authorityList.add(new SimpleGrantedAuthority(user.getUserType().name()));
         UserDetails userDetails = CurrentUser
                 .builder()
                 .id(user.getId())
+                .userType(user.getUserType())
+                .username(user.getId().toString())
                 .enabled(true)
                 .accountNonLocked(true)
                 .accountNonExpired(true)

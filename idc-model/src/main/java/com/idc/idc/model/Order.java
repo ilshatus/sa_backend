@@ -3,14 +3,12 @@ package com.idc.idc.model;
 import com.idc.idc.model.abstracts.AbstractAuditableEntity;
 import com.idc.idc.model.embeddable.OrderDestination;
 import com.idc.idc.model.embeddable.OrderFrom;
-import com.idc.idc.model.enums.UserRole;
-import com.idc.idc.model.enums.UserState;
+import com.idc.idc.model.enums.OrderStatus;
 import lombok.*;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-
 
 @Table(name = "orders")
 @Entity
@@ -41,7 +39,7 @@ public class Order extends AbstractAuditableEntity {
     private OrderDestination orderDestination;
 
     @Column(name = STATUS)
-    private int status;
+    private OrderStatus status;
 
     @Column(name = WEIGHT)
     private double weight;

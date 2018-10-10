@@ -1,8 +1,6 @@
 package com.idc.idc.model.users;
 
-import com.idc.idc.model.abstracts.AbstractAuditableEntity;
-import com.idc.idc.model.abstracts.AbstractEntity;
-import com.idc.idc.model.enums.UserState;
+import com.idc.idc.model.abstracts.AbstractUserEntity;
 import lombok.*;
 
 import javax.persistence.*;
@@ -16,23 +14,19 @@ import javax.persistence.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Customer extends AbstractAuditableEntity {
+public class Customer extends AbstractUserEntity {
     public static final String EMAIL = "email";
-    public static final String PASSWORD_HASH = "password_hash";
     public static final String NAME = "name";
+    public static final String EMAIL_CONFIRMED = "email_confirmed";
 
     @Column(name = EMAIL, length = 100, unique = true)
     private String email;
 
-    @Column(name = PASSWORD_HASH, length = 512)
-    private String passwordHash;
-
     @Column(name = NAME, length = 250)
     private String name;
 
-    @Column
-    @Enumerated(EnumType.STRING)
-    private UserState state;
+    @Column(name = EMAIL_CONFIRMED)
+    private Boolean emailConfirmed;
 }
 
 
