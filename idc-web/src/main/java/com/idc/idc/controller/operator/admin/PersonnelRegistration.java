@@ -3,15 +3,13 @@ package com.idc.idc.controller.operator.admin;
 import com.idc.idc.dto.form.UserRegistrationForm;
 import com.idc.idc.dto.json.SimpleOperationStatusJson;
 import com.idc.idc.dto.json.ValidationErrorJson;
+import com.idc.idc.exception.RegistrationException;
 import com.idc.idc.response.HttpResponseStatus;
 import com.idc.idc.response.Response;
 import com.idc.idc.service.UserService;
 import com.idc.idc.util.ValidationUtils;
 import com.idc.idc.validator.UserRegistrationFormValidator;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,6 +52,7 @@ public class PersonnelRegistration {
             @ApiImplicitParam(name = "Authorization", value = "Authorization header",
                     defaultValue = "%JWTTOKEN%", required = true, dataType = "string", paramType = "header")
     })
+    @ApiResponses({ @ApiResponse(code = org.apache.http.HttpStatus.SC_BAD_REQUEST, message = "Registration failed") })
     @PostMapping(REGISTER_OPERATOR)
     public ResponseEntity<Response<SimpleOperationStatusJson>> registerOperator(
             @Valid @ModelAttribute UserRegistrationForm userRegistrationForm, BindingResult bindingResult) {
@@ -74,7 +73,7 @@ public class PersonnelRegistration {
             registrationJson.setSuccess(true);
             log.info("Successfully registered operator with email [{}]", userRegistrationForm.getEmail());
             return new ResponseEntity<>(new Response<>(registrationJson), HttpStatus.OK);
-        } catch (Exception e) {
+        } catch (RegistrationException e) {
             return new ResponseEntity<>(new Response<>(null, e.getMessage()), HttpStatus.BAD_REQUEST);
         }
     }
@@ -84,6 +83,7 @@ public class PersonnelRegistration {
             @ApiImplicitParam(name = "Authorization", value = "Authorization header",
                     defaultValue = "%JWTTOKEN%", required = true, dataType = "string", paramType = "header")
     })
+    @ApiResponses({ @ApiResponse(code = org.apache.http.HttpStatus.SC_BAD_REQUEST, message = "Registration failed") })
     @PostMapping(REGISTER_DRIVER)
     public ResponseEntity<Response<SimpleOperationStatusJson>> registerDriver(
             @Valid @ModelAttribute UserRegistrationForm userRegistrationForm, BindingResult bindingResult) {
@@ -104,7 +104,7 @@ public class PersonnelRegistration {
             registrationJson.setSuccess(true);
             log.info("Successfully registered driver with email [{}]", userRegistrationForm.getEmail());
             return new ResponseEntity<>(new Response<>(registrationJson), HttpStatus.OK);
-        } catch (Exception e) {
+        } catch (RegistrationException e) {
             return new ResponseEntity<>(new Response<>(null, e.getMessage()), HttpStatus.BAD_REQUEST);
         }
     }

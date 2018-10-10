@@ -53,6 +53,7 @@ public class CustomerAuthController {
     }
 
     @ApiOperation(value = "Sign up by email, name and password")
+    @ApiResponses({ @ApiResponse(code = org.apache.http.HttpStatus.SC_BAD_REQUEST, message = "Registration failed") })
     @PostMapping(REGISTER_URL)
     public ResponseEntity<Response<CustomerRegistrationJson>> signUp(
             @Valid @ModelAttribute UserRegistrationForm userRegistrationForm, BindingResult bindingResult) {

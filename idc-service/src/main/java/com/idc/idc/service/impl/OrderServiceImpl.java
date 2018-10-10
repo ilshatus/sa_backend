@@ -61,9 +61,8 @@ public class OrderServiceImpl implements OrderService {
                 CurrentLocation loc2 = o2.getLocation();
                 Double dist1 = Math.pow(loc1.getLatitude() - orderLoc.getOriginLatitude(), 2) +
                         Math.pow(loc1.getLongitude() - loc2.getLongitude(), 2);
-                return 0;
+
             }
         });
-        return drivers;
     }
 }
