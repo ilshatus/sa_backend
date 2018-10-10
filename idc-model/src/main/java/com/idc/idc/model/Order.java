@@ -26,6 +26,7 @@ public class Order extends AbstractAuditableEntity {
     public static final String WORTH = "worth";
     public static final String DESCRIPTION = "description";
     public static final String CONTACTS = "contacts";
+    public static final String TRACKING_CODE = "tracking_code";
 
     @Column(name = DUE_DATE)
     @Type(type = "java.time.LocalDateTime")
@@ -51,4 +52,7 @@ public class Order extends AbstractAuditableEntity {
 
     @Column(name = CONTACTS)
     private String contacts;
+
+    @Column(name = TRACKING_CODE)
+    private String tracking_code;
 }

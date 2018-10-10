@@ -2,7 +2,6 @@ package com.idc.idc.service.impl;
 
 import com.idc.idc.exception.NotFoundException;
 import com.idc.idc.model.Order;
-import com.idc.idc.model.User;
 import com.idc.idc.repository.OrderRepository;
 import com.idc.idc.service.OrderService;
 import lombok.extern.slf4j.Slf4j;
@@ -39,4 +38,15 @@ public class OrderServiceImpl implements OrderService {
     public List<Order> getListOfOrders() {
         return orderRepository.findAll();
     }
+
+    @Override
+    public String createOrder(Order order) {
+        try {
+            orderRepository.save(order);
+        } catch (Exception e) {
+        }
+        return null;
+    }
+
+
 }
