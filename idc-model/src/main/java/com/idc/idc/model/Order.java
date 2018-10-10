@@ -1,6 +1,8 @@
 package com.idc.idc.model;
 
 import com.idc.idc.model.abstracts.AbstractAuditableEntity;
+import com.idc.idc.model.embeddable.OrderDestination;
+import com.idc.idc.model.embeddable.OrderFrom;
 import com.idc.idc.model.enums.UserRole;
 import com.idc.idc.model.enums.UserState;
 import lombok.*;
@@ -31,11 +33,11 @@ public class Order extends AbstractAuditableEntity {
     @Type(type = "java.time.LocalDateTime")
     private LocalDateTime due_date;
 
-    @Column(name = FROM)
-    private double from;
+    @Embedded
+    private OrderFrom orderFrom;
 
-    @Column(name = TO)
-    private double to;
+    @Embedded
+    private OrderDestination orderDestination;
 
     @Column(name = STATUS)
     private int status;
