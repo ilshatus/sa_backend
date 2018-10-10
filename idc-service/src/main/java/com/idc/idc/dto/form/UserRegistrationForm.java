@@ -1,6 +1,8 @@
 package com.idc.idc.dto.form;
 
 import com.idc.idc.model.users.Customer;
+import com.idc.idc.model.users.Driver;
+import com.idc.idc.model.users.Operator;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
@@ -25,8 +27,24 @@ public class UserRegistrationForm {
     @ApiModelProperty(value = PASSWORD_CONFIRM_FIELD, required = true)
     private String passwordConfirm;
 
-    public Customer toUser() {
+    public Customer toCustomer() {
         return Customer
+                .builder()
+                .name(name)
+                .email(email)
+                .build();
+    }
+
+    public Driver toDriver() {
+        return Driver
+                .builder()
+                .name(name)
+                .email(email)
+                .build();
+    }
+
+    public Operator toOperator() {
+        return Operator
                 .builder()
                 .name(name)
                 .email(email)
