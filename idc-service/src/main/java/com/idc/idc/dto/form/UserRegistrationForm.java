@@ -29,8 +29,7 @@ public class UserRegistrationForm {
 
     public Customer toCustomer() {
         return Customer
-                .builder()
-                .name(name)
+                .builder().name(name)
                 .email(email)
                 .build();
     }

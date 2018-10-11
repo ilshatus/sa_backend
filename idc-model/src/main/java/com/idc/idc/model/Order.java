@@ -26,6 +26,7 @@ public class Order extends AbstractAuditableEntity {
     public static final String DESCRIPTION = "description";
     public static final String CONTACTS = "contacts";
     public static final String CUSTOMER_ID = "customer_id";
+    public static final String TRACKING_CODE = "trackingCode";
 
     @Column(name = DUE_DATE)
     @Type(type = "java.time.LocalDateTime")
@@ -48,6 +49,9 @@ public class Order extends AbstractAuditableEntity {
 
     @Column(name = DESCRIPTION)
     private String description;
+
+    @Column(name = TRACKING_CODE)
+    private String tracking_code;
 
     @ManyToOne
     @JoinColumn(name = CUSTOMER_ID)

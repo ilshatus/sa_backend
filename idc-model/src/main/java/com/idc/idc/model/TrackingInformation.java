@@ -7,7 +7,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
-@Table(name = "orders")
+@Table(name = "tracking_codes")
 @Entity
 @Setter
 @Getter
@@ -15,12 +15,12 @@ import javax.persistence.Table;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TrackingInformation extends AbstractAuditableEntity {
-    public static final String TRACKING_CODE = "tracking_code";
-    public static final String CURRENT_POSITION = "current_position";
+    public static final String TRACKING_CODE = "trackingCode";
+    public static final String CURRENT_POSITION = "currentPosition";
 
     @Column(name = TRACKING_CODE)
-    private String tracking_code;
+    private String trackingCode;
 
     @Column(name = CURRENT_POSITION)
-    private String current_position;
+    private String currentPosition;
 }

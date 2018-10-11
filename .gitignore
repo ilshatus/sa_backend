@@ -3,3 +3,4 @@ target
 tmp/
 var/
 *.iml
+application.properties

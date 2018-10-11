@@ -27,7 +27,8 @@ public class TrackingInformationServiceImpl implements TrackingInformationServic
     @Override
     public void registerTrackingInformation(String trackingCode, String currentPosition) {
         TrackingInformation trackingInformation = TrackingInformation.builder()
-                .tracking_code(trackingCode).current_position(currentPosition).build();
+                .trackingCode(trackingCode).currentPosition(currentPosition).build();
+        submitTrackingInformation(trackingInformation);
     }
 
     @Override
@@ -36,7 +37,7 @@ public class TrackingInformationServiceImpl implements TrackingInformationServic
         if (StringUtils.isBlank(currentPosition)) {
             return;
         }
-        trackingInformation.setCurrent_position(currentPosition);
+        trackingInformation.setCurrentPosition(currentPosition);
         submitTrackingInformation(trackingInformation);
     }
 
@@ -51,7 +52,7 @@ public class TrackingInformationServiceImpl implements TrackingInformationServic
             return null;
         }
         Optional<TrackingInformation> oneByTrackingCode = trackingInformationRepository.
-                findTrackingInformationByTracking_codeAnd(trackingCode);
+                findTrackingInformationByTrackingCode(trackingCode);
         return oneByTrackingCode.orElseThrow(() -> new NotFoundException(
                 String.format("Order with %s tracking code not found", trackingCode)));
     }
