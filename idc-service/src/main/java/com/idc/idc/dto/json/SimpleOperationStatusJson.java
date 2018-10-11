@@ -19,5 +19,4 @@ public class SimpleOperationStatusJson {
         }
         return errors;
     }
-
 }

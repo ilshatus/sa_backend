@@ -24,7 +24,7 @@ public class Task extends AbstractAuditableEntity {
     private Order order;
 
     @ManyToOne
-    @JoinColumn(name = ORDER_ID)
+    @JoinColumn(name = DRIVER_ID)
     private Driver driver;
 
     @Column(name = TASK_STATUS)
