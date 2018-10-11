@@ -8,12 +8,12 @@ import com.idc.idc.model.users.Driver;
 import com.idc.idc.repository.OrderRepository;
 import com.idc.idc.service.OrderService;
 import com.idc.idc.service.UserService;
+import com.idc.idc.util.CollectionUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -54,15 +54,22 @@ public class OrderServiceImpl implements OrderService {
     public List<Driver> getNearestDrivers(Order order, Integer limit) {
         List<Driver> drivers = userService.getAllDrivers();
         OrderOrigin orderLoc = order.getOrigin();
-        drivers.sort(new Comparator<Driver>() {
-            @Override
-            public int compare(Driver o1, Driver o2) {
-                CurrentLocation loc1 = o1.getLocation();
-                CurrentLocation loc2 = o2.getLocation();
-                Double dist1 = Math.pow(loc1.getLatitude() - orderLoc.getOriginLatitude(), 2) +
-                        Math.pow(loc1.getLongitude() - loc2.getLongitude(), 2);
+        drivers.sort((Driver o1, Driver o2) -> {
+            CurrentLocation loc1 = o1.getLocation();
+            CurrentLocation loc2 = o2.getLocation();
+            Double dist1 = Math.pow(loc1.getLatitude() - orderLoc.getOriginLatitude(), 2) +
+                    Math.pow(loc1.getLongitude() - orderLoc.getOriginLongitude(), 2);
 
+            Double dist2 = Math.pow(loc2.getLatitude() - orderLoc.getOriginLatitude(), 2) +
+                    Math.pow(loc2.getLongitude() - orderLoc.getOriginLongitude(), 2);
+            if (dist1.equals(dist2))
+                return 0;
+            if (dist1 < dist2) {
+                return 1;
+            } else {
+                return -1;
             }
         });
+        return CollectionUtils.subList(drivers, 0, limit);
     }
 }
