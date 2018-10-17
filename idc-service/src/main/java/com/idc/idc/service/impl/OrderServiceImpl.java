@@ -1,5 +1,6 @@
 package com.idc.idc.service.impl;
 
+import com.idc.idc.dto.form.OrderCreationForm;
 import com.idc.idc.exception.NotFoundException;
 import com.idc.idc.model.Order;
 import com.idc.idc.model.embeddable.CurrentLocation;
@@ -25,26 +26,6 @@ import java.util.Optional;
 public class OrderServiceImpl implements OrderService {
     private OrderRepository orderRepository;
     private UserService userService;
-
-
-    private long calculatePrice(double weight, long worth, OrderOrigin origin, OrderDestination destination){
-        double R = 6371e3; // metres
-        double lat1 = origin.getOriginLatitude()*Math.PI/180;
-        double lat2 = destination.getDestinationLatitude()*Math.PI/180;
-        double lon1 = origin.getOriginLongitude()*Math.PI/180;
-        double lon2 = destination.getDestinationLongitude()*Math.PI/180;
-
-        double delta_f = lat2-lat1;
-        double delta_lammbda = lon2-lon1;
-
-        double a = Math.sin(delta_f/2) * Math.sin(delta_f/2) +
-                Math.cos(lat1) * Math.cos(lat2) *
-                        Math.sin(delta_lammbda/2) * Math.sin(delta_lammbda/2);
-        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-        double distance = R * c;
-
-        return (long) ((weight*0.2)*(distance*0.1)*(worth*0.5));
-    }
 
     @Autowired
     public OrderServiceImpl(OrderRepository orderRepository,
@@ -73,14 +54,40 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Order changeStatus(Long orderId, OrderStatus status){
+    public Order changeStatus(Long orderId, OrderStatus status) {
         if (orderId == null) {
             return null;
         }
-        Optional<Order> oneById = orderRepository.findOneById(orderId);
-        oneById.get().setStatus(status);
-        return oneById.orElseThrow(() -> new NotFoundException(String.format("Order %d not found", orderId)));
+        Order order = getOrder(orderId);
+        order.setStatus(status);
+        return submitOrder(order);
     }
 
+    @Override
+    public Order createOrder(OrderCreationForm form, Long customerId) {
+        Order order = form.toOrder();
+        order.setStatus(OrderStatus.PENDING_CONFIRMATION);
+        order.setCustomer(userService.getCustomer(customerId));
+        order.setDeliverPrice(calculatePrice(order));
+        return submitOrder(order);
+    }
 
+    private Long calculatePrice(Order order) {
+        double R = 6371e3; // metres
+        double lat1 = order.getOrigin().getOriginLatitude() * Math.PI / 180;
+        double lat2 = order.getDestination().getDestinationLatitude() * Math.PI / 180;
+        double lon1 = order.getOrigin().getOriginLongitude() * Math.PI / 180;
+        double lon2 = order.getDestination().getDestinationLongitude() * Math.PI / 180;
+
+        double deltaF = lat2 - lat1;
+        double deltaLambda = lon2 - lon1;
+
+        double a = Math.sin(deltaF / 2) * Math.sin(deltaF / 2) +
+                Math.cos(lat1) * Math.cos(lat2) *
+                        Math.sin(deltaLambda / 2) * Math.sin(deltaLambda / 2);
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        double distance = R * c;
+
+        return (long) ((order.getWeight() * 0.2) * (distance * 0.1) * (order.getWorth() * 0.5));
+    }
 }

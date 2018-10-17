@@ -1,5 +1,6 @@
 package com.idc.idc.service;
 
+import com.idc.idc.dto.form.OrderCreationForm;
 import com.idc.idc.model.Order;
 import com.idc.idc.model.enums.OrderStatus;
 
@@ -10,4 +11,5 @@ public interface OrderService {
     List<Order> getListOfOrders();
     Order submitOrder(Order order);
     Order changeStatus(Long orderId, OrderStatus status);
+    Order createOrder(OrderCreationForm form, Long customerId);
 }

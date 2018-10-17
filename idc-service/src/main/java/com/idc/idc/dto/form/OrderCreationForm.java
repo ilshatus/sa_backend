@@ -10,6 +10,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
 
 @Getter
 @Setter
@@ -18,39 +20,46 @@ public class OrderCreationForm {
     public static final String WORTH = "worth";
     public static final String DESCRIPTION = "description";
     public static final String DUE_DATE = "dueDate";
-    public static final String ORIGIN = "origin";
-    public static final String DESTINATION = "destionation";
+    public static final String ORIGIN_LAT = "origin_lat";
+    public static final String DESTINATION_LAT = "destination_lat";
+    public static final String ORIGIN_LONG = "origin_long";
+    public static final String DESTINATION_LONG = "destination_long";
 
     @ApiModelProperty(value = WEIGHT, required = true)
     private Double weight;
 
     @ApiModelProperty(value = WORTH, required = true)
-    private Double worth;
+    private Long worth;
 
     @ApiModelProperty(value = DESCRIPTION, required = true)
     private String description;
 
     @ApiModelProperty(value = DUE_DATE, required = true)
-    private LocalDateTime dueDate;
+    private Date dueDate;
 
-    @ApiModelProperty(value = ORIGIN, required = true)
-    private OrderOrigin orderOrigin;
+    @ApiModelProperty(value = ORIGIN_LAT, required = true)
+    private Double originLat;
 
-    @ApiModelProperty(value = DESTINATION, required = true)
-    private OrderDestination orderDestination;
+    @ApiModelProperty(value = DESTINATION_LAT, required = true)
+    private Double destinationLat;
 
-    public Order toOrder(Customer customer) {
+    @ApiModelProperty(value = ORIGIN_LONG, required = true)
+    private Double originLong;
+
+    @ApiModelProperty(value = DESTINATION_LONG, required = true)
+    private Double destinationLong;
+
+    public Order toOrder() {
         return Order.
                 builder()
-                .customer(customer)
                 .weight(weight)
                 .worth(worth)
                 .description(description)
-                .dueDate(dueDate)
-                .origin(orderOrigin)
-                .destination(orderDestination)
+                .dueDate(dueDate != null ?
+                        dueDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate() : null)
+                .origin(new OrderOrigin(originLat, originLong))
+                .destination(new OrderDestination(destinationLat, destinationLong))
                 .build();
-
     }
 
 }

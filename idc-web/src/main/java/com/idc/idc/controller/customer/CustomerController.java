@@ -2,6 +2,7 @@ package com.idc.idc.controller.customer;
 
 import com.idc.idc.CurrentUser;
 import com.idc.idc.dto.form.OrderCreationForm;
+import com.idc.idc.dto.json.OrderJson;
 import com.idc.idc.dto.json.OrderSuccessJson;
 import com.idc.idc.model.Order;
 import com.idc.idc.model.users.Customer;
@@ -24,25 +25,23 @@ public class CustomerController {
     public static final String ROOT_URL = "/v1/customer";
     public static final String ORDER = "/order";
 
-    private final UserService userService;
     private final OrderService orderService;
 
     @Autowired
-    public CustomerController(UserService userService, OrderService orderService) {
-        this.userService = userService;
+    public CustomerController(OrderService orderService) {
         this.orderService = orderService;
     }
 
     @ApiOperation(value = "Create order")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization", value = "Authorization header",
+                    defaultValue = "%JWTTOKEN%", required = true, dataType = "string", paramType = "header")
+    })
     @PostMapping(ORDER)
-    public ResponseEntity<Response<OrderSuccessJson>> createOrder(@AuthenticationPrincipal CurrentUser currentUser,
-                                                                  @ModelAttribute OrderCreationForm orderCreationForm) {
-        Long currentId = currentUser.getId();
-        Customer currentCustomer = userService.getCustomer(currentId);
-        Order order = orderCreationForm.toOrder(currentCustomer);
-        orderService.submitOrder(order);
-        OrderSuccessJson orderSuccessJson = new OrderSuccessJson();
-        return new ResponseEntity<>(new Response<>(orderSuccessJson), HttpStatus.OK);
+    public ResponseEntity<Response<OrderJson>> createOrder(@AuthenticationPrincipal CurrentUser currentUser,
+                                                           @ModelAttribute OrderCreationForm orderCreationForm) {
+        Order order = orderService.createOrder(orderCreationForm, currentUser.getId());
+        return new ResponseEntity<>(new Response<>(OrderJson.mapFromOrder(order)), HttpStatus.OK);
     }
 
 }

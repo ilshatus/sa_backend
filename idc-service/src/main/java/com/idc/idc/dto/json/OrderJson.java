@@ -10,9 +10,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.Builder;
-import net.sf.ehcache.search.parser.MCriteria;
 
-import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
 
 @Getter
 @Setter
@@ -23,34 +23,41 @@ public class OrderJson {
     private Long id;
 
     @JsonProperty("due_date")
-    private LocalDateTime dueDate;
+    private Date dueDate;
 
-    private OrderOrigin origin;
+    private OrderOriginJson origin;
 
-    private OrderDestination destination;
+    private OrderDestinationJson destination;
 
     private OrderStatus status;
 
-    private double weight;
+    private Double weight;
 
-    private double worth;
+    private Long worth;
 
     private String description;
 
-    private Customer customer;
+    private CustomerJson customer;
 
-    public static OrderJson mapFromOrder(Order Order) {
+    @JsonProperty("deliver_price")
+    private Long deliverPrice;
 
+    public static OrderJson mapFromOrder(Order order) {
+        Date date = null;
+        if (order.getDueDate() != null) {
+            date = Date.from(order.getDueDate().atStartOfDay(ZoneId.systemDefault()).toInstant());
+        }
         return OrderJson.builder()
-                .id(Order.getId())
-                .dueDate(Order.getDueDate())
-                .origin(Order.getOrigin())
-                .destination(Order.getDestination())
-                .status(Order.getStatus())
-                .weight(Order.getWeight())
-                .worth(Order.getWorth())
-                .description(Order.getDescription())
-                .customer(Order.getCustomer())
+                .id(order.getId())
+                .dueDate(date)
+                .origin(OrderOriginJson.mapFromOrderOrigin(order.getOrigin()))
+                .destination(OrderDestinationJson.mapFromOrderDestination(order.getDestination()))
+                .status(order.getStatus())
+                .weight(order.getWeight())
+                .worth(order.getWorth())
+                .description(order.getDescription())
+                .customer(CustomerJson.mapFromCustomer(order.getCustomer()))
+                .deliverPrice(order.getDeliverPrice())
                 .build();
     }
 }
