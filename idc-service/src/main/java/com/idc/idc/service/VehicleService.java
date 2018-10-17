@@ -14,4 +14,5 @@ public interface VehicleService {
     List<Vehicle> getNearestVehicles(Order order, Integer limit);
     Vehicle updatePositionOfVehicle(Long driverId, CurrentLocation location);
     Vehicle submitVehicle(Vehicle vehicle);
+    List<Vehicle> getTracksRequiringDrivers();
 }

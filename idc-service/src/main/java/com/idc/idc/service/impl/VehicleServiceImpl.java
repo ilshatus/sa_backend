@@ -14,6 +14,7 @@ import com.idc.idc.util.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -96,5 +97,18 @@ public class VehicleServiceImpl implements VehicleService {
                         Math.sin(deltaLambda / 2) * Math.sin(deltaLambda / 2);
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
         return R * c;
+    }
+
+    @Override
+    public List<Vehicle> getTracksRequiringDrivers(){
+        List<Vehicle> tracks = vehicleRepository.findAllByType(VehicleType.TRACK);
+        List<Vehicle> tracksRequiringDrivers = new ArrayList<>();
+        for(Vehicle track:tracks){
+            if(track.getDrivers().size() < 2)
+            {
+                tracksRequiringDrivers.add(track);
+            }
+        }
+        return tracksRequiringDrivers;
     }
 }
