@@ -43,10 +43,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/**.js", "/**.html").permitAll()
                 .antMatchers("/v1/admin/**").hasAuthority("ADMIN")
-                .antMatchers("/v1/operators").permitAll()
-                .antMatchers("/v1/drivers").permitAll()
-                .antMatchers("/v1/customers").permitAll()
-
+                .antMatchers("/v1/operator").hasAuthority(UserType.OPERATOR.name())
+                .antMatchers("/v1/drivers").hasAuthority(UserType.DRIVER.name())
+                .antMatchers("/v1/customers").hasAuthority(UserType.CUSTOMER.name())
+                .antMatchers("/v1/**").permitAll()
                 .and()
                 .logout().permitAll();
     }
@@ -54,7 +54,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 
     @Autowired
-    public void registerGlobalAuthentication(AuthenticationManagerBuilder auth) throws Exception {
+    public void registerGlobalAuthentication(AuthenticationManagerBuilder auth) {
         auth.authenticationProvider(userPasswordAuthProvider);
     }
 }

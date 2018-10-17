@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface OrderService {
     Order getOrder(Long orderId);
-    List<Order> getListOfOrders();
+    List<Order> getAllOrders(Integer limit, Integer offset);
     Order submitOrder(Order order);
     Order changeStatus(Long orderId, OrderStatus status);
     Order createOrder(OrderCreationForm form, Long customerId);

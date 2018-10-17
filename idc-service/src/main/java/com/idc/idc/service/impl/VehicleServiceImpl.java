@@ -8,6 +8,7 @@ import com.idc.idc.model.embeddable.OrderOrigin;
 import com.idc.idc.model.enums.VehicleType;
 import com.idc.idc.model.users.Driver;
 import com.idc.idc.repository.VehicleRepository;
+import com.idc.idc.service.UserService;
 import com.idc.idc.service.VehicleService;
 import com.idc.idc.util.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,10 +19,13 @@ import java.util.List;
 @Service
 public class VehicleServiceImpl implements VehicleService {
     private VehicleRepository vehicleRepository;
+    private UserService userService;
 
     @Autowired
-    public VehicleServiceImpl(VehicleRepository vehicleRepository) {
+    public VehicleServiceImpl(VehicleRepository vehicleRepository,
+                              UserService userService) {
         this.vehicleRepository = vehicleRepository;
+        this.userService = userService;
     }
 
     @Override
@@ -62,5 +66,21 @@ public class VehicleServiceImpl implements VehicleService {
             }
         });
         return CollectionUtils.subList(drivers, 0, limit);
+    }
+
+    @Override
+    public Vehicle updatePositionOfVehicle(Long driverId, CurrentLocation location) {
+        Driver driver = userService.getDriver(driverId);
+        if (driver.getVehicle() == null) {
+            throw new NotFoundException(String.format("Driver %d do not assigned to vehicle", driver.getId()));
+        }
+        Vehicle vehicle = driver.getVehicle();
+        vehicle.setLocation(location);
+        return submitVehicle(vehicle);
+    }
+
+    @Override
+    public Vehicle submitVehicle(Vehicle vehicle) {
+        return vehicleRepository.save(vehicle);
     }
 }

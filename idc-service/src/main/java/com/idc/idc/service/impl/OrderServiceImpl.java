@@ -44,8 +44,9 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<Order> getListOfOrders() {
-        return orderRepository.findAll();
+    public List<Order> getAllOrders(Integer limit, Integer offset) {
+        return CollectionUtils.subList(orderRepository.findAll(),
+                offset * limit, (offset + 1) * limit);
     }
 
     @Override
