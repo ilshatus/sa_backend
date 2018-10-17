@@ -27,7 +27,7 @@ public class OrderServiceImpl implements OrderService {
     private UserService userService;
 
 
-    private double calculatePrice(double weight, double worth, OrderOrigin origin, OrderDestination destination){
+    private long calculatePrice(double weight, long worth, OrderOrigin origin, OrderDestination destination){
         double R = 6371e3; // metres
         double lat1 = origin.getOriginLatitude()*Math.PI/180;
         double lat2 = destination.getDestinationLatitude()*Math.PI/180;
@@ -43,7 +43,7 @@ public class OrderServiceImpl implements OrderService {
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
         double distance = R * c;
 
-        return (weight*0.2)*(distance*0.1)*(worth*0.5);
+        return (long) ((weight*0.2)*(distance*0.1)*(worth*0.5));
     }
 
     @Autowired

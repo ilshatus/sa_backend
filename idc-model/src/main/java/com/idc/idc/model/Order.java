@@ -45,7 +45,7 @@ public class Order extends AbstractAuditableEntity {
     private double weight;
 
     @Column(name = WORTH)
-    private double worth;
+    private long worth;
 
     @Column(name = DESCRIPTION)
     private String description;
@@ -55,5 +55,5 @@ public class Order extends AbstractAuditableEntity {
     private Customer customer;
 
     @Column(name = DELIVER_PRICE)
-    private double deliver_price;
+    private long deliverPrice;
 }
