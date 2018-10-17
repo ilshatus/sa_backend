@@ -4,6 +4,7 @@ import com.idc.idc.exception.NotFoundException;
 import com.idc.idc.model.Order;
 import com.idc.idc.model.embeddable.CurrentLocation;
 import com.idc.idc.model.embeddable.OrderOrigin;
+import com.idc.idc.model.enums.OrderStatus;
 import com.idc.idc.model.users.Driver;
 import com.idc.idc.repository.OrderRepository;
 import com.idc.idc.service.OrderService;
@@ -72,4 +73,16 @@ public class OrderServiceImpl implements OrderService {
         });
         return CollectionUtils.subList(drivers, 0, limit);
     }
+
+    @Override
+    public Order changeStatus(Long orderId, OrderStatus status){
+        if (orderId == null) {
+            return null;
+        }
+        Optional<Order> oneById = orderRepository.findOneById(orderId);
+        oneById.get().setStatus(status);
+        return oneById.orElseThrow(() -> new NotFoundException(String.format("Order %d not found", orderId)));
+    }
+
+
 }
