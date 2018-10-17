@@ -13,6 +13,7 @@ import com.idc.idc.util.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -62,5 +63,18 @@ public class VehicleServiceImpl implements VehicleService {
             }
         });
         return CollectionUtils.subList(drivers, 0, limit);
+    }
+
+    @Override
+    public List<Vehicle> getTracksRequiringDrivers(){
+        List<Vehicle> tracks = vehicleRepository.findAllByType(VehicleType.TRACK);
+        List<Vehicle> tracksRequiringDrivers = new ArrayList<>();
+        for(Vehicle track:tracks){
+            if(track.getDrivers().size() < 2)
+            {
+                tracksRequiringDrivers.add(track);
+            }
+        }
+        return tracksRequiringDrivers;
     }
 }

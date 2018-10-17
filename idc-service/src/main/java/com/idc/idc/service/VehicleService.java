@@ -11,4 +11,5 @@ public interface VehicleService {
     List<Vehicle> getAllVehicles();
     List<Vehicle> getVehiclesByType(VehicleType type);
     List<Vehicle> getNearestVehicles(Order order, Integer limit);
+    List<Vehicle> getTracksRequiringDrivers();
 }
