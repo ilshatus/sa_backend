@@ -3,6 +3,7 @@ package com.idc.idc.service.impl;
 import com.idc.idc.exception.NotFoundException;
 import com.idc.idc.model.Order;
 import com.idc.idc.model.embeddable.CurrentLocation;
+import com.idc.idc.model.embeddable.OrderDestination;
 import com.idc.idc.model.embeddable.OrderOrigin;
 import com.idc.idc.model.enums.OrderStatus;
 import com.idc.idc.model.users.Driver;
@@ -24,6 +25,26 @@ import java.util.Optional;
 public class OrderServiceImpl implements OrderService {
     private OrderRepository orderRepository;
     private UserService userService;
+
+
+    private double calculatePrice(double weight, double worth, OrderOrigin origin, OrderDestination destination){
+        double R = 6371e3; // metres
+        double lat1 = origin.getOriginLatitude()*Math.PI/180;
+        double lat2 = destination.getDestinationLatitude()*Math.PI/180;
+        double lon1 = origin.getOriginLongitude()*Math.PI/180;
+        double lon2 = destination.getDestinationLongitude()*Math.PI/180;
+
+        double delta_f = lat2-lat1;
+        double delta_lammbda = lon2-lon1;
+
+        double a = Math.sin(delta_f/2) * Math.sin(delta_f/2) +
+                Math.cos(lat1) * Math.cos(lat2) *
+                        Math.sin(delta_lammbda/2) * Math.sin(delta_lammbda/2);
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        double distance = R * c;
+
+        return (weight*0.2)*(distance*0.1)*(worth*0.5);
+    }
 
     @Autowired
     public OrderServiceImpl(OrderRepository orderRepository,

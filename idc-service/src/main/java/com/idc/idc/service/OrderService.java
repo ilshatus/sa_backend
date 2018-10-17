@@ -12,5 +12,4 @@ public interface OrderService {
     Order submitOrder(Order order);
     List<Driver> getNearestDrivers(Order order, Integer limit);
     Order changeStatus(Long orderId, OrderStatus status);
-
 }
