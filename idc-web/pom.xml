@@ -11,7 +11,7 @@
 
     <artifactId>idc-web</artifactId>
 
-    <packaging>war</packaging>
+    <packaging>jar</packaging>
 
     <dependencies>
 
