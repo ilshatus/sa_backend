@@ -82,7 +82,7 @@ public class VehicleServiceImpl implements VehicleService {
         return vehicleRepository.save(vehicle);
     }
 
-    private Double distance(CurrentLocation loc, OrderOrigin origin){
+    private Double distance(CurrentLocation loc, OrderOrigin origin) {
         double R = 6371e3; // metres
         double lat1 = loc.getLatitude() * Math.PI / 180;
         double lat2 = origin.getOriginLatitude() * Math.PI / 180;
@@ -100,12 +100,11 @@ public class VehicleServiceImpl implements VehicleService {
     }
 
     @Override
-    public List<Vehicle> getTracksRequiringDrivers(){
-        List<Vehicle> tracks = vehicleRepository.findAllByType(VehicleType.TRACK);
+    public List<Vehicle> getTracksRequiringDrivers() {
+        List<Vehicle> tracks = getVehiclesByType(VehicleType.TRACK);
         List<Vehicle> tracksRequiringDrivers = new ArrayList<>();
-        for(Vehicle track:tracks){
-            if(track.getDrivers().size() < 2)
-            {
+        for (Vehicle track : tracks) {
+            if (track.getDrivers().size() < 2) {
                 tracksRequiringDrivers.add(track);
             }
         }
