@@ -29,8 +29,8 @@ import java.util.List;
 public class PersonnelRegistration {
     public static final String ROOT_URL = "/v1/admin/personnel";
     public static final String REGISTER_URL = "/register";
-    public static final String REGISTER_OPERATOR = REGISTER_URL + "/operator";
-    public static final String REGISTER_DRIVER = REGISTER_URL + "/driver";
+    public static final String REGISTER_OPERATOR = REGISTER_URL + "/operators";
+    public static final String REGISTER_DRIVER = REGISTER_URL + "/drivers";
 
     private final UserService userService;
     private final UserRegistrationFormValidator userRegistrationFormValidator;

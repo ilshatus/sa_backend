@@ -24,7 +24,6 @@ public class Order extends AbstractAuditableEntity {
     public static final String WEIGHT = "weight";
     public static final String WORTH = "worth";
     public static final String DESCRIPTION = "description";
-    public static final String CONTACTS = "contacts";
     public static final String CUSTOMER_ID = "customer_id";
     public static final String TRACKING_CODE = "trackingCode";
 
