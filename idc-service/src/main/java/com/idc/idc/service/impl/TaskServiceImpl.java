@@ -8,12 +8,20 @@ import com.idc.idc.model.enums.TaskStatus;
 import com.idc.idc.model.users.Driver;
 import com.idc.idc.repository.TaskRepository;
 import com.idc.idc.service.TaskService;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+@Slf4j
+@Service
+@Transactional
 public class TaskServiceImpl implements TaskService {
     private TaskRepository taskRepository;
 
+    @Autowired
     public TaskServiceImpl(TaskRepository taskRepository) {
         this.taskRepository = taskRepository;
     }
