@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 @Api(tags = {"Customer"})
@@ -39,7 +40,11 @@ public class CustomerController {
     })
     @PostMapping(ORDER)
     public ResponseEntity<Response<OrderJson>> createOrder(@AuthenticationPrincipal CurrentUser currentUser,
-                                                           @ModelAttribute OrderCreationForm orderCreationForm) {
+                                                           @ModelAttribute OrderCreationForm orderCreationForm,
+                                                           BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return new ResponseEntity<>(new Response<>(null, "validation-error"), HttpStatus.BAD_REQUEST);
+        }
         Order order = orderService.createOrder(orderCreationForm, currentUser.getId());
         return new ResponseEntity<>(new Response<>(OrderJson.mapFromOrder(order)), HttpStatus.OK);
     }

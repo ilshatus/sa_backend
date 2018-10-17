@@ -9,6 +9,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
@@ -25,27 +26,35 @@ public class OrderCreationForm {
     public static final String ORIGIN_LONG = "origin_long";
     public static final String DESTINATION_LONG = "destination_long";
 
+    @NotNull
     @ApiModelProperty(value = WEIGHT, required = true)
     private Double weight;
 
+    @NotNull
     @ApiModelProperty(value = WORTH, required = true)
     private Long worth;
 
+    @NotNull
     @ApiModelProperty(value = DESCRIPTION, required = true)
     private String description;
 
+    @NotNull
     @ApiModelProperty(value = DUE_DATE, required = true)
     private Date dueDate;
 
+    @NotNull
     @ApiModelProperty(value = ORIGIN_LAT, required = true)
     private Double originLat;
 
+    @NotNull
     @ApiModelProperty(value = DESTINATION_LAT, required = true)
     private Double destinationLat;
 
+    @NotNull
     @ApiModelProperty(value = ORIGIN_LONG, required = true)
     private Double originLong;
 
+    @NotNull
     @ApiModelProperty(value = DESTINATION_LONG, required = true)
     private Double destinationLong;
 
