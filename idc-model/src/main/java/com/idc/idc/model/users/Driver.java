@@ -1,5 +1,6 @@
 package com.idc.idc.model.users;
 
+import com.idc.idc.model.Vehicle;
 import com.idc.idc.model.abstracts.AbstractUserEntity;
 import com.idc.idc.model.embeddable.CurrentLocation;
 import lombok.*;
@@ -18,6 +19,7 @@ import javax.persistence.*;
 public class Driver extends AbstractUserEntity {
     public static final String EMAIL = "email";
     public static final String NAME = "name";
+    public static final String VEHICLE_ID = "vehicle_id";
 
     @Column(name = EMAIL, length = 100, unique = true)
     private String email;
@@ -25,6 +27,7 @@ public class Driver extends AbstractUserEntity {
     @Column(name = NAME, length = 250)
     private String name;
 
-    @Embedded
-    private CurrentLocation location;
+    @ManyToOne
+    @JoinColumn(name = VEHICLE_ID)
+    private Vehicle vehicle;
 }
