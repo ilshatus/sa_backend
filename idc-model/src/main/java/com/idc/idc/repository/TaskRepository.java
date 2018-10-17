@@ -4,7 +4,6 @@ import com.idc.idc.model.Order;
 import com.idc.idc.model.Task;
 import com.idc.idc.model.Vehicle;
 import com.idc.idc.model.enums.TaskStatus;
-import com.idc.idc.model.users.Driver;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

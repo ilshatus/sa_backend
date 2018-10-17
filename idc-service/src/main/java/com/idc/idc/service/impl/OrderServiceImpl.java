@@ -1,6 +1,7 @@
 package com.idc.idc.service.impl;
 
 import com.idc.idc.dto.form.OrderCreationForm;
+import com.idc.idc.dto.json.CurrentLocationJson;
 import com.idc.idc.exception.NotFoundException;
 import com.idc.idc.model.Order;
 import com.idc.idc.model.embeddable.CurrentLocation;
@@ -12,6 +13,7 @@ import com.idc.idc.repository.OrderRepository;
 import com.idc.idc.service.OrderService;
 import com.idc.idc.service.UserService;
 import com.idc.idc.util.CollectionUtils;
+import com.idc.idc.util.TrackingCodeUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,12 +28,15 @@ import java.util.Optional;
 public class OrderServiceImpl implements OrderService {
     private OrderRepository orderRepository;
     private UserService userService;
+    private TrackingCodeUtil trackingCodeUtil;
 
     @Autowired
     public OrderServiceImpl(OrderRepository orderRepository,
-                            UserService userService) {
+                            UserService userService,
+                            TrackingCodeUtil trackingCodeUtil) {
         this.orderRepository = orderRepository;
         this.userService = userService;
+        this.trackingCodeUtil = trackingCodeUtil;
     }
 
     @Override
@@ -41,6 +46,14 @@ public class OrderServiceImpl implements OrderService {
         }
         Optional<Order> oneById = orderRepository.findOneById(orderId);
         return oneById.orElseThrow(() -> new NotFoundException(String.format("Order %d not found", orderId)));
+    }
+
+    @Override
+    public Order getOrder(String trackingCode) {
+        Order order = orderRepository.findOneByTrackingCode(trackingCode).orElseThrow(() -> new NotFoundException(
+                String.format("Order with tracking number %d not found", trackingCode)
+        ));
+        return order;
     }
 
     @Override
@@ -70,6 +83,14 @@ public class OrderServiceImpl implements OrderService {
         order.setStatus(OrderStatus.PENDING_CONFIRMATION);
         order.setCustomer(userService.getCustomer(customerId));
         order.setDeliverPrice(calculatePrice(order));
+        Double latitude = order.getOrigin().getOriginLatitude();
+        Double longitude = order.getOrigin().getOriginLongitude();
+        order.setLocation(CurrentLocation.builder()
+                .latitude(latitude)
+                .longitude(longitude)
+                .build()
+        );
+        order.setTrackingCode(trackingCodeUtil.generate());
         return submitOrder(order);
     }
 
