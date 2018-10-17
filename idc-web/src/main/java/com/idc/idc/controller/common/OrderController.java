@@ -1,4 +1,4 @@
-package com.idc.idc.controller.order;
+package com.idc.idc.controller.common;
 
 import com.idc.idc.dto.json.SimpleOrderJson;
 import com.idc.idc.exception.NotFoundException;
@@ -12,7 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@Api(tags = {"Orders"})
+@Api(tags = {"Common.Orders"})
 @RestController
 @RequestMapping(OrderController.ROOT_URL)
 @Slf4j

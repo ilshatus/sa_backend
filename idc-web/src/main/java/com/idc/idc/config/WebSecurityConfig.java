@@ -44,8 +44,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/**.js", "/**.html").permitAll()
                 .antMatchers("/v1/admin/**").hasAuthority("ADMIN")
                 .antMatchers("/v1/operator").hasAuthority(UserType.OPERATOR.name())
-                .antMatchers("/v1/drivers").hasAuthority(UserType.DRIVER.name())
-                .antMatchers("/v1/customers").hasAuthority(UserType.CUSTOMER.name())
+                .antMatchers("/v1/driver").hasAuthority(UserType.DRIVER.name())
+                .antMatchers("/v1/customer").hasAuthority(UserType.CUSTOMER.name())
                 .antMatchers("/v1/**").permitAll()
                 .and()
                 .logout().permitAll();
