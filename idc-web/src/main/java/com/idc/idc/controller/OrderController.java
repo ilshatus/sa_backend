@@ -19,8 +19,8 @@ import org.springframework.web.bind.annotation.*;
 @Api(tags = {"TrackingInformation.Operations"})
 @Slf4j
 @RestController
-@RequestMapping(OrdersController.ROOT_URL)
-public class OrdersController {
+@RequestMapping(OrderController.ROOT_URL)
+public class OrderController {
     public static final String ROOT_URL = "/v1/orders";
     private static final String ORDERS = ROOT_URL + "/{order_id}";
     private static final String TRACK_INFO = ORDERS + "/trackinfo";
@@ -28,8 +28,8 @@ public class OrdersController {
     private TrackingInformationService trackingInformationService;
     private OrderService orderService;
     @Autowired
-    public OrdersController(TrackingInformationService trackingInformationService,
-    OrderService orderService) {
+    public OrderController(TrackingInformationService trackingInformationService,
+                           OrderService orderService) {
         this.trackingInformationService = trackingInformationService;
         this.orderService = orderService;
     }

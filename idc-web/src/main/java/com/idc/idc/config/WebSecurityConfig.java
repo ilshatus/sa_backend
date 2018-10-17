@@ -1,6 +1,7 @@
 package com.idc.idc.config;
 
 import com.idc.idc.HeaderAuthenticationFilter;
+import com.idc.idc.UserType;
 import com.idc.idc.provider.UserPasswordAuthProvider;
 import com.idc.idc.service.AuthTokenService;
 import com.idc.idc.service.UserService;
@@ -42,7 +43,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/**.js", "/**.html").permitAll()
                 .antMatchers("/v1/admin/**").hasAuthority("ADMIN")
-                .antMatchers("/v1/**").permitAll()
+                .antMatchers("/v1/operators").permitAll()
+                .antMatchers("/v1/drivers").permitAll()
+                .antMatchers("/v1/customers").permitAll()
+
                 .and()
                 .logout().permitAll();
     }

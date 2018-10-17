@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(DriverAuthController.ROOT_URL)
 @Slf4j
 public class DriverAuthController {
-    public static final String ROOT_URL = "/v1/driver";
+    public static final String ROOT_URL = "/v1/drivers";
     public static final String LOGIN_URL = "/login";
 
     private final Authenticator authenticator;
