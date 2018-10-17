@@ -10,12 +10,12 @@ import javax.persistence.Column;
 @AllArgsConstructor
 @Builder
 public class OrderDestination {
-    public static final String TO_LATITUDE = "to_latitude";
-    public static final String TO_LONGITUDE = "to_longitude";
+    public static final String DESTINATION_LATITUDE = "destination_latitude";
+    public static final String DESTINATION_LONGITUDE = "destination_longitude";
 
-    @Column(name = TO_LATITUDE)
-    private Double fromLatitude;
+    @Column(name = DESTINATION_LATITUDE)
+    private Double destinationLatitude;
 
-    @Column(name = TO_LONGITUDE)
-    private Double fromLongitude;
+    @Column(name = DESTINATION_LONGITUDE)
+    private Double destinationLongitude;
 }

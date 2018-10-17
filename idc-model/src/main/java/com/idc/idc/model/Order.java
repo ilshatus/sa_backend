@@ -25,6 +25,7 @@ public class Order extends AbstractAuditableEntity {
     public static final String WORTH = "worth";
     public static final String DESCRIPTION = "description";
     public static final String CUSTOMER_ID = "customer_id";
+    public static final String DELIVER_PRICE = "deliver_price";
     public static final String TRACKING_CODE = "trackingCode";
 
     @Column(name = DUE_DATE)
@@ -44,7 +45,7 @@ public class Order extends AbstractAuditableEntity {
     private double weight;
 
     @Column(name = WORTH)
-    private double worth;
+    private long worth;
 
     @Column(name = DESCRIPTION)
     private String description;
@@ -55,4 +56,7 @@ public class Order extends AbstractAuditableEntity {
     @ManyToOne
     @JoinColumn(name = CUSTOMER_ID)
     private Customer customer;
+
+    @Column(name = DELIVER_PRICE)
+    private long deliverPrice;
 }
