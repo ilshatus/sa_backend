@@ -21,6 +21,9 @@ public class Driver extends AbstractUserEntity {
     public static final String NAME = "name";
     public static final String VEHICLE_ID = "vehicle_id";
 
+    @Embedded
+    private CurrentLocation location;
+
     @Column(name = EMAIL, length = 100, unique = true)
     private String email;
 

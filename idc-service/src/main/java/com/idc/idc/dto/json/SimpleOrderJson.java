@@ -16,7 +16,7 @@ import java.util.Date;
 @Setter
 @Builder
 @AllArgsConstructor
-public class OrderJson {
+public class SimpleOrderJson {
 
     private Long id;
 
@@ -35,19 +35,17 @@ public class OrderJson {
 
     private String description;
 
-    private CustomerJson customer;
-
     private CurrentLocationJson locationJson;
 
     @JsonProperty("deliver_price")
     private Long deliverPrice;
 
-    public static OrderJson mapFromOrder(Order order) {
+    public static SimpleOrderJson mapFromOrder(Order order) {
         Date date = null;
         if (order.getDueDate() != null) {
             date = Date.from(order.getDueDate().atStartOfDay(ZoneId.systemDefault()).toInstant());
         }
-        return OrderJson.builder()
+        return SimpleOrderJson.builder()
                 .id(order.getId())
                 .dueDate(date)
                 .origin(OrderOriginJson.mapFromOrderOrigin(order.getOrigin()))
@@ -56,7 +54,6 @@ public class OrderJson {
                 .weight(order.getWeight())
                 .worth(order.getWorth())
                 .description(order.getDescription())
-                .customer(CustomerJson.mapFromCustomer(order.getCustomer()))
                 .locationJson(CurrentLocationJson.mapFromCurrentLocation(order.getLocation()))
                 .deliverPrice(order.getDeliverPrice())
                 .build();

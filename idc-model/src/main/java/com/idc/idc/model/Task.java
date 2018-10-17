@@ -16,7 +16,7 @@ import javax.persistence.*;
 @AllArgsConstructor
 public class Task extends AbstractAuditableEntity {
     private static final String ORDER_ID = "order_id";
-    private static final String DRIVER_ID = "driver_id";
+    private static final String VEHICLE_ID = "vehicle_id";
     private static final String TASK_STATUS = "task_status";
 
     @ManyToOne
@@ -24,7 +24,7 @@ public class Task extends AbstractAuditableEntity {
     private Order order;
 
     @ManyToOne
-    @JoinColumn(name = DRIVER_ID)
+    @JoinColumn(name = VEHICLE_ID)
     private Vehicle vehicle;
 
     @Column(name = TASK_STATUS)

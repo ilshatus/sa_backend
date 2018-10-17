@@ -3,6 +3,7 @@ package com.idc.idc.service.impl;
 import com.idc.idc.exception.NotFoundException;
 import com.idc.idc.model.Order;
 import com.idc.idc.model.Task;
+import com.idc.idc.model.Vehicle;
 import com.idc.idc.model.enums.TaskStatus;
 import com.idc.idc.model.users.Driver;
 import com.idc.idc.repository.TaskRepository;
@@ -24,8 +25,8 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public List<Task> getTasksByDriver(Driver driver) {
-        return taskRepository.findAllByDriver(driver);
+    public List<Task> getTasksByDriver(Vehicle vehicle) {
+        return taskRepository.findAllByVehicle(vehicle);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.idc.idc.model;
 
 import com.idc.idc.model.abstracts.AbstractAuditableEntity;
+import com.idc.idc.model.embeddable.CurrentLocation;
 import com.idc.idc.model.embeddable.OrderDestination;
 import com.idc.idc.model.embeddable.OrderOrigin;
 import com.idc.idc.model.enums.OrderStatus;
@@ -38,6 +39,9 @@ public class Order extends AbstractAuditableEntity {
 
     @Embedded
     private OrderDestination destination;
+
+    @Embedded
+    private CurrentLocation location;
 
     @Column(name = STATUS)
     private OrderStatus status;

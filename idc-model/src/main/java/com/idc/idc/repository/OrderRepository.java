@@ -10,5 +10,6 @@ import java.util.Optional;
 
 public interface OrderRepository extends JpaRepository<Order, Long> {
     Optional<Order> findOneById(long id);
+    Optional<Order> findOneByTrackingCode(String trackingCode);
     List<Order> findAllByStatus(OrderStatus status);
 }
