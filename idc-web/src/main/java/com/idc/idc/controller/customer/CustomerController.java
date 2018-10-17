@@ -16,13 +16,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-@Api(tags = {"Customer.Auth"})
+@Api(tags = {"Customer"})
 @RestController
-@RequestMapping(CustomerAuthController.ROOT_URL)
+@RequestMapping(CustomerController.ROOT_URL)
 @Slf4j
 public class CustomerController {
     public static final String ROOT_URL = "/v1/customer";
-    public static final String CREATE_ORDER = ROOT_URL + "/order";
+    public static final String ORDER = "/order";
 
     private final UserService userService;
     private final OrderService orderService;
@@ -33,11 +33,10 @@ public class CustomerController {
         this.orderService = orderService;
     }
 
-    @ApiOperation(value = "Sign up by email, name and password")
-    @ApiResponses({ @ApiResponse(code = org.apache.http.HttpStatus.SC_BAD_REQUEST, message = "Registration failed") })
-    @PostMapping(CREATE_ORDER)
+    @ApiOperation(value = "Create order")
+    @PostMapping(ORDER)
     public ResponseEntity<Response<OrderSuccessJson>> createOrder(@AuthenticationPrincipal CurrentUser currentUser,
-                                                                  OrderCreationForm orderCreationForm) {
+                                                                  @ModelAttribute OrderCreationForm orderCreationForm) {
         Long currentId = currentUser.getId();
         Customer currentCustomer = userService.getCustomer(currentId);
         Order order = orderCreationForm.toOrder(currentCustomer);

@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-@Api(tags = {"Operator.Auth"})
+@Api(tags = {"Operators.Auth"})
 @RestController
 @RequestMapping(OperatorAuthController.ROOT_URL)
 @Slf4j

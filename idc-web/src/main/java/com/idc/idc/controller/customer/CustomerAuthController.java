@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
 
-@Api(tags = {"Customer.Auth"})
+@Api(tags = {"Customers.Auth"})
 @RestController
 @RequestMapping(CustomerAuthController.ROOT_URL)
 @Slf4j
