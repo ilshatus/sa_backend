@@ -1,11 +1,7 @@
 package com.idc.idc.dto.json;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.idc.idc.model.Order;
 import com.idc.idc.model.Task;
 import com.idc.idc.model.enums.TaskStatus;
-import com.idc.idc.model.users.Customer;
-import com.idc.idc.model.users.Driver;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -15,24 +11,23 @@ import lombok.Builder;
 @Setter
 @Builder
 @AllArgsConstructor
-
 public class TaskJson {
 
     private Long id;
 
-    private Order order;
+    private OrderJson order;
 
-    private Driver driver;
+    private VehicleJson vehicle;
 
     private TaskStatus status;
 
-    public static TaskJson mapFromTask(Task Task) {
+    public static TaskJson mapFromTask(Task task) {
 
         return TaskJson.builder()
-                .id(Task.getId())
-                .order(Task.getOrder())
-                .driver(Task.getDriver())
-                .status(Task.getStatus())
+                .id(task.getId())
+                .order(OrderJson.mapFromOrder(task.getOrder()))
+                .vehicle(VehicleJson.mapFromVehicle(task.getVehicle()))
+                .status(task.getStatus())
                 .build();
     }
 }

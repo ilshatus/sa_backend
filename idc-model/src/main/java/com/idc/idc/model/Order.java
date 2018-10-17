@@ -9,6 +9,7 @@ import lombok.*;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Table(name = "orders")
@@ -24,13 +25,13 @@ public class Order extends AbstractAuditableEntity {
     public static final String WEIGHT = "weight";
     public static final String WORTH = "worth";
     public static final String DESCRIPTION = "description";
-    public static final String CONTACTS = "contacts";
     public static final String CUSTOMER_ID = "customer_id";
-    public static final String TRACKING_CODE = "trackingCode";
+    public static final String DELIVER_PRICE = "deliver_price";
+    public static final String TRACKING_CODE = "tracking_code";
 
     @Column(name = DUE_DATE)
-    @Type(type = "java.time.LocalDateTime")
-    private LocalDateTime dueDate;
+    @Type(type = "java.time.LocalDate")
+    private LocalDate dueDate;
 
     @Embedded
     private OrderOrigin origin;
@@ -42,18 +43,21 @@ public class Order extends AbstractAuditableEntity {
     private OrderStatus status;
 
     @Column(name = WEIGHT)
-    private double weight;
+    private Double weight;
 
     @Column(name = WORTH)
-    private double worth;
+    private Long worth;
 
     @Column(name = DESCRIPTION)
     private String description;
 
     @Column(name = TRACKING_CODE)
-    private String tracking_code;
+    private String trackingCode;
 
     @ManyToOne
     @JoinColumn(name = CUSTOMER_ID)
     private Customer customer;
+
+    @Column(name = DELIVER_PRICE)
+    private Long deliverPrice;
 }
