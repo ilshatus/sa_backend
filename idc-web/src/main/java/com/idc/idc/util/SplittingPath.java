@@ -4,9 +4,10 @@ import java.util.ArrayList;
 
 public class SplittingPath {
 
+    private Double alreadyTraveled;
     final Double MIN = 0.000009999999996068709;
-    public ArrayList<Double[]> split(Double[][] points){
-        Double alreadyTraveled = Math.random()*0.7 + 0.3;
+    public  ArrayList<Double[]> split(Double[][] points){
+        alreadyTraveled = Math.random()*0.7 + 0.3;
         ArrayList<Double[]> splitted_points =  new ArrayList<>();
         for(int i = (int) (points.length*alreadyTraveled); i < points.length; i++){
             Double distance = distance(points[i-1], points[i]);
@@ -20,7 +21,11 @@ public class SplittingPath {
                 splitted_points.add(points[i - 1]);
             }
         }
-        return splitted_points;
+        return  splitted_points;
+    }
+
+    public Double getAlreadyTraveledDistance(){
+        return alreadyTraveled;
     }
 
     private Double distance(Double[] a, Double[] b){
