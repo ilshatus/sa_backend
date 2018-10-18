@@ -22,8 +22,8 @@ public class OrderDestinationJson {
     public static OrderDestinationJson mapFromOrderDestination(OrderDestination OrderDestination) {
 
         return OrderDestinationJson.builder()
-                .fromLatitude(OrderDestination.getFromLatitude())
-                .fromLongitude(OrderDestination.getFromLongitude())
+                .fromLatitude(OrderDestination.getDestinationLatitude())
+                .fromLongitude(OrderDestination.getDestinationLongitude())
                 .build();
     }
 }
