@@ -21,8 +21,8 @@ public class OperatorSimulationController {
     public static final String SPLIT_PATH = "/split/path";
 
     @ApiOperation("Get splitted path")
-    @GetMapping(SPLIT_PATH)
-    public ResponseEntity<Response<Double[][]>> splitPath(@RequestParam String points) {
+    @PostMapping(SPLIT_PATH)
+    public ResponseEntity<Response<Double[][]>> splitPath(@RequestBody String points) {
         try {
             Gson gson = new Gson();
             Double[][] pointsConverted = gson.fromJson(points, Double[][].class);
