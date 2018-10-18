@@ -70,7 +70,7 @@ public class UserPasswordAuthProvider implements AuthenticationProvider {
                 case OPERATOR:
                     Operator operator = userService.getOperatorByEmail(email);
                     userEntity = operator;
-                    if (operator.getAdmin())
+                    if (operator.getAdmin() != null && operator.getAdmin())
                         authorityList.add(new SimpleGrantedAuthority("ADMIN"));
             }
         } catch (NotFoundException e) {
