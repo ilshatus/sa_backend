@@ -1,5 +1,6 @@
 package com.idc.idc;
 
+import com.idc.idc.exception.AuthTokenParseException;
 import com.idc.idc.exception.NotFoundException;
 import com.idc.idc.model.users.Operator;
 import com.idc.idc.service.UserService;
@@ -29,9 +30,8 @@ import java.util.List;
 
 @Setter
 @Getter
+@Slf4j
 public class HeaderAuthenticationFilter extends FilterSecurityInterceptor {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(HeaderAuthenticationFilter.class);
 
     private AuthTokenService authTokenService;
     private UserService userService;
@@ -59,8 +59,8 @@ public class HeaderAuthenticationFilter extends FilterSecurityInterceptor {
 
         try {
             user = authTokenService.getUserId(xAuth);
-        } catch (IndexOutOfBoundsException e) {
-            logger.info("Not valid token");
+        } catch (AuthTokenParseException e) {
+            logger.info("Wrong token: " + e.getMessage());
             return null;
         }
 
@@ -79,7 +79,7 @@ public class HeaderAuthenticationFilter extends FilterSecurityInterceptor {
                         authorityList.add(new SimpleGrantedAuthority("ADMIN"));
             }
         } catch (NotFoundException e) {
-            LOGGER.info("{} with id {} not found", user.getUserType().name(), user.getId());
+            log.info("{} with id {} not found", user.getUserType().name(), user.getId());
             return null;
         }
         authorityList.add(new SimpleGrantedAuthority(user.getUserType().name()));

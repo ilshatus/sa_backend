@@ -2,6 +2,7 @@ package com.idc.idc.service.impl;
 
 import com.idc.idc.User;
 import com.idc.idc.UserType;
+import com.idc.idc.exception.AuthTokenParseException;
 import com.idc.idc.service.AuthTokenService;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
@@ -46,7 +47,7 @@ public class AuthTokenServiceImpl implements AuthTokenService {
             UserType userType = UserType.valueOf(claims.get(USER_TYPE).toString());
             return new User(id, userType);
         } catch (Exception e) {
-            return null;
+            throw new AuthTokenParseException(e.getMessage());
         }
     }
 }
