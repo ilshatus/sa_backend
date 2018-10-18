@@ -15,12 +15,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-@Api(tags = {"Operator.Auth"})
+@Api(tags = {"Operators.Auth"})
 @RestController
 @RequestMapping(OperatorAuthController.ROOT_URL)
 @Slf4j
 public class OperatorAuthController {
-    public static final String ROOT_URL = "/v1/operator";
+    public static final String ROOT_URL = "/v1/operators";
     public static final String LOGIN_URL = "/login";
 
     private final Authenticator authenticator;

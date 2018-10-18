@@ -13,17 +13,16 @@ import lombok.Builder;
 @AllArgsConstructor
 public class OrderDestinationJson {
 
-    @JsonProperty("from_latitude")
-    private Double fromLatitude;
+    @JsonProperty("destination_latitude")
+    private Double destinationLatitude;
 
-    @JsonProperty("from_longitude")
-    private Double fromLongitude;
+    @JsonProperty("destination_longitude")
+    private Double destinationLongitude;
 
     public static OrderDestinationJson mapFromOrderDestination(OrderDestination OrderDestination) {
-
         return OrderDestinationJson.builder()
-                .fromLatitude(OrderDestination.getDestinationLatitude())
-                .fromLongitude(OrderDestination.getDestinationLongitude())
+                .destinationLatitude(OrderDestination.getDestinationLatitude())
+                .destinationLongitude(OrderDestination.getDestinationLongitude())
                 .build();
     }
 }

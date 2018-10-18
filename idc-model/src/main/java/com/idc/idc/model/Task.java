@@ -25,7 +25,7 @@ public class Task extends AbstractAuditableEntity {
 
     @ManyToOne
     @JoinColumn(name = DRIVER_ID)
-    private Driver driver;
+    private Vehicle vehicle;
 
     @Column(name = TASK_STATUS)
     @Enumerated(EnumType.STRING)
