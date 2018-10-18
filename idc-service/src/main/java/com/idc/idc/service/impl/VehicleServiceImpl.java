@@ -48,11 +48,8 @@ public class VehicleServiceImpl implements VehicleService {
         drivers.sort((Vehicle o1, Vehicle o2) -> {
             CurrentLocation loc1 = o1.getLocation();
             CurrentLocation loc2 = o2.getLocation();
-            Double dist1 = Math.pow(loc1.getLatitude() - orderLoc.getOriginLatitude(), 2) +
-                    Math.pow(loc1.getLongitude() - orderLoc.getOriginLongitude(), 2);
-
-            Double dist2 = Math.pow(loc2.getLatitude() - orderLoc.getOriginLatitude(), 2) +
-                    Math.pow(loc2.getLongitude() - orderLoc.getOriginLongitude(), 2);
+            Double dist1 = distance(loc1, orderLoc);
+            Double dist2 = distance(loc2, orderLoc);
             if (dist1.equals(dist2))
                 return 0;
             if (dist1 < dist2) {
@@ -62,5 +59,22 @@ public class VehicleServiceImpl implements VehicleService {
             }
         });
         return CollectionUtils.subList(drivers, 0, limit);
+    }
+
+    private Double distance(CurrentLocation loc, OrderOrigin origin){
+        double R = 6371e3; // metres
+        double lat1 = loc.getLatitude() * Math.PI / 180;
+        double lat2 = origin.getOriginLatitude() * Math.PI / 180;
+        double lon1 = loc.getLongitude() * Math.PI / 180;
+        double lon2 = origin.getOriginLongitude() * Math.PI / 180;
+
+        double deltaF = lat2 - lat1;
+        double deltaLambda = lon2 - lon1;
+
+        double a = Math.sin(deltaF / 2) * Math.sin(deltaF / 2) +
+                Math.cos(lat1) * Math.cos(lat2) *
+                        Math.sin(deltaLambda / 2) * Math.sin(deltaLambda / 2);
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        return R * c;
     }
 }
