@@ -11,7 +11,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -41,13 +40,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         this.userPasswordAuthProvider = userPasswordAuthProvider;
     }
 
-    @Override
-    public void configure(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers(
-                "/v1/**/login/**",
-                "/v1/**/register/**"
-        );
-    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -64,7 +56,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .addFilter(filter)
                 .authorizeRequests()
-                .antMatchers("/**.js", "/**.html").permitAll()
+                .antMatchers("/**.js", "/**.html", "/**/login", "/**/register").permitAll()
                 .antMatchers("/v1/admin/**").hasAuthority("ADMIN")
                 .antMatchers("/v1/operator/**").hasAuthority(UserType.OPERATOR.name())
                 .antMatchers("/v1/driver/**").hasAuthority(UserType.DRIVER.name())
