@@ -2,7 +2,6 @@ package com.idc.idc.dto.json;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.idc.idc.model.Order;
-import com.idc.idc.model.embeddable.CurrentLocation;
 import com.idc.idc.model.enums.OrderStatus;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -21,7 +20,7 @@ public class SimpleOrderJson {
     private Long id;
 
     @JsonProperty("due_date")
-    private Date dueDate;
+    private Long dueDate;
 
     private OrderOriginJson origin;
 
@@ -41,13 +40,9 @@ public class SimpleOrderJson {
     private Long deliverPrice;
 
     public static SimpleOrderJson mapFromOrder(Order order) {
-        Date date = null;
-        if (order.getDueDate() != null) {
-            date = Date.from(order.getDueDate().atStartOfDay(ZoneId.systemDefault()).toInstant());
-        }
         return SimpleOrderJson.builder()
                 .id(order.getId())
-                .dueDate(date)
+                .dueDate(order.getDueDate().getTime())
                 .origin(OrderOriginJson.mapFromOrderOrigin(order.getOrigin()))
                 .destination(OrderDestinationJson.mapFromOrderDestination(order.getDestination()))
                 .status(order.getStatus())
@@ -55,7 +50,7 @@ public class SimpleOrderJson {
                 .worth(order.getWorth())
                 .description(order.getDescription())
                 .locationJson(CurrentLocationJson.mapFromCurrentLocation(order.getLocation()))
-                .deliverPrice(order.getDeliverPrice())
+                .deliverPrice(order.getDeliveryPrice())
                 .build();
     }
 }

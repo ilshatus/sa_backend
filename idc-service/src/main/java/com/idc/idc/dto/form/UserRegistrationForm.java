@@ -1,11 +1,17 @@
 package com.idc.idc.dto.form;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.idc.idc.model.users.Customer;
 import com.idc.idc.model.users.Driver;
 import com.idc.idc.model.users.Operator;
-import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.validator.constraints.Email;
+import org.hibernate.validator.constraints.NotBlank;
+
+import javax.validation.constraints.Pattern;
+
+import static com.idc.idc.validator.ValidationConstants.*;
 
 @Getter
 @Setter
@@ -15,22 +21,28 @@ public class UserRegistrationForm {
     public static final String PASSWORD_FIELD = "password"; // validate
     public static final String PASSWORD_CONFIRM_FIELD = "password_confirm"; // validate
 
-    @ApiModelProperty(value = NAME, required = true)
+    @JsonProperty(value = NAME, required = true)
+    @NotBlank(message = "The name must not be blank")
     private String name;
 
-    @ApiModelProperty(value = EMAIL, required = true)
+    @JsonProperty(value = EMAIL, required = true)
+    @NotBlank(message = "The email must not be blank")
+    @Email(message = "Email format is wrong")
     private String email;
 
-    @ApiModelProperty(value = PASSWORD_FIELD, required = true)
+    @JsonProperty(value = PASSWORD_FIELD, required = true)
+    @NotBlank(message = "The password must not be blank")
+    @Pattern(regexp = PASSWORD_PATTERN, message = PASSWORD_VALIDATION_MESSAGE)
     private String password;
 
-    @ApiModelProperty(value = PASSWORD_CONFIRM_FIELD, required = true)
+    @JsonProperty(value = PASSWORD_CONFIRM_FIELD, required = true)
+    @NotBlank(message = "The password confirm must not be blank")
     private String passwordConfirm;
 
     public Customer toCustomer() {
         return Customer
                 .builder().name(name)
-                .email(email)
+                .email(email.toLowerCase())
                 .build();
     }
 
@@ -38,7 +50,7 @@ public class UserRegistrationForm {
         return Driver
                 .builder()
                 .name(name)
-                .email(email)
+                .email(email.toLowerCase())
                 .build();
     }
 
@@ -46,7 +58,7 @@ public class UserRegistrationForm {
         return Operator
                 .builder()
                 .name(name)
-                .email(email)
+                .email(email.toLowerCase())
                 .build();
     }
 }

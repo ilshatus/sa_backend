@@ -54,7 +54,7 @@ public class OperatorOrdersController {
     })
     @GetMapping(ORDER)
     public ResponseEntity<Response<OrderJson>> getOrder(@PathVariable("order_id") Long orderId,
-                                                              @AuthenticationPrincipal CurrentUser currentUser) {
+                                                        @AuthenticationPrincipal CurrentUser currentUser) {
         try {
             Order order = orderService.getOrder(orderId);
             return new ResponseEntity<>(new Response<>(OrderJson.mapFromOrder(order)), HttpStatus.OK);

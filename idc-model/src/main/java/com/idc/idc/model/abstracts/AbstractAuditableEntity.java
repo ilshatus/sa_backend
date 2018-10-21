@@ -2,7 +2,6 @@ package com.idc.idc.model.abstracts;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.Type;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -10,7 +9,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import javax.persistence.Column;
 import javax.persistence.EntityListeners;
 import javax.persistence.MappedSuperclass;
-import java.time.LocalDateTime;
+import java.util.Date;
 
 @Setter
 @Getter
@@ -22,11 +21,9 @@ public abstract class AbstractAuditableEntity extends AbstractEntity {
 
     @CreatedDate
     @Column(name = CREATED_DATE_COLUMN_NAME)
-    @Type(type = "java.time.LocalDateTime")
-    private LocalDateTime createdDate;
+    private Date createdDate;
 
     @LastModifiedDate
     @Column(name = LAST_MODIFIED_DATE_COLUMN_NAME)
-    @Type(type = "java.time.LocalDateTime")
-    private LocalDateTime lastModifiedDate;
+    private Date lastModifiedDate;
 }

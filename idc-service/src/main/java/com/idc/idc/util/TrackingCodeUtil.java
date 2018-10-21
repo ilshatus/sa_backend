@@ -17,18 +17,16 @@ public class TrackingCodeUtil {
 
     private final String countries[] = new String[]{"RU", "KZ", "DE", "GB"};
 
-    public static final int DEFAULT_PASSWORD_LENGTH = 8;
+    public static final int TRACKING_CODE_LENGTH = 8;
 
     public String generate() {
-        return generate(DEFAULT_PASSWORD_LENGTH);
+        return generate(TRACKING_CODE_LENGTH);
     }
 
     public String generate(int length)
     {
-
-        Random rand = new Random();
-        String origin = countries[rand.nextInt() % 6];
-        String destination = countries[rand.nextInt() % 6];
+        String origin = countries[0];
+        String destination = countries[0];
         String trackingCode = origin + RandomStringUtils.randomAlphanumeric(length) + destination;
         while (orderRepository.findOneByTrackingCode(trackingCode).isPresent()) {
             trackingCode = origin + RandomStringUtils.randomAlphanumeric(length) + destination;

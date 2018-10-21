@@ -1,14 +1,10 @@
 package com.idc.idc.service.impl;
 
 import com.idc.idc.dto.form.OrderCreationForm;
-import com.idc.idc.dto.json.CurrentLocationJson;
 import com.idc.idc.exception.NotFoundException;
 import com.idc.idc.model.Order;
 import com.idc.idc.model.embeddable.CurrentLocation;
-import com.idc.idc.model.embeddable.OrderDestination;
-import com.idc.idc.model.embeddable.OrderOrigin;
 import com.idc.idc.model.enums.OrderStatus;
-import com.idc.idc.model.users.Driver;
 import com.idc.idc.repository.OrderRepository;
 import com.idc.idc.service.OrderService;
 import com.idc.idc.service.UserService;
@@ -82,14 +78,10 @@ public class OrderServiceImpl implements OrderService {
         Order order = form.toOrder();
         order.setStatus(OrderStatus.PENDING_CONFIRMATION);
         order.setCustomer(userService.getCustomer(customerId));
-        order.setDeliverPrice(calculatePrice(order));
+        order.setDeliveryPrice(calculatePrice(order));
         Double latitude = order.getOrigin().getOriginLatitude();
         Double longitude = order.getOrigin().getOriginLongitude();
-        order.setLocation(CurrentLocation.builder()
-                .latitude(latitude)
-                .longitude(longitude)
-                .build()
-        );
+        order.setLocation(new CurrentLocation(latitude, longitude));
         order.setTrackingCode(trackingCodeUtil.generate());
         return submitOrder(order);
     }

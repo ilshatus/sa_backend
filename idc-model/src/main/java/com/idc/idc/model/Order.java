@@ -7,11 +7,9 @@ import com.idc.idc.model.embeddable.OrderOrigin;
 import com.idc.idc.model.enums.OrderStatus;
 import com.idc.idc.model.users.Customer;
 import lombok.*;
-import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.util.Date;
 
 @Table(name = "orders")
 @Entity
@@ -21,18 +19,17 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Order extends AbstractAuditableEntity {
-    public static final String DUE_DATE = "dueDate";
+    public static final String DUE_DATE = "due_date";
     public static final String STATUS = "status";
     public static final String WEIGHT = "weight";
     public static final String WORTH = "worth";
     public static final String DESCRIPTION = "description";
     public static final String CUSTOMER_ID = "customer_id";
-    public static final String DELIVER_PRICE = "deliver_price";
+    public static final String DELIVERY_PRICE = "delivery_price";
     public static final String TRACKING_CODE = "tracking_code";
 
     @Column(name = DUE_DATE)
-    @Type(type = "java.time.LocalDate")
-    private LocalDate dueDate;
+    private Date dueDate;
 
     @Embedded
     private OrderOrigin origin;
@@ -62,6 +59,6 @@ public class Order extends AbstractAuditableEntity {
     @JoinColumn(name = CUSTOMER_ID)
     private Customer customer;
 
-    @Column(name = DELIVER_PRICE)
-    private Long deliverPrice;
+    @Column(name = DELIVERY_PRICE)
+    private Long deliveryPrice;
 }

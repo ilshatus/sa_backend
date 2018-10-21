@@ -13,7 +13,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import java.text.DateFormat;
+import java.util.Date;
 
 @Api(tags = {"Customer"})
 @RestController
@@ -37,10 +42,11 @@ public class CustomerController {
     })
     @PostMapping(ORDER)
     public ResponseEntity<Response<OrderJson>> createOrder(@AuthenticationPrincipal CurrentUser currentUser,
-                                                           @ModelAttribute OrderCreationForm orderCreationForm,
-                                                           BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            return new ResponseEntity<>(new Response<>(null, "validation-error"), HttpStatus.BAD_REQUEST);
+                                                           @Valid @RequestBody OrderCreationForm orderCreationForm,
+                                                           BindingResult errors) {
+        if (errors.hasErrors()) {
+            return new ResponseEntity<>(
+                    new Response<>(null, errors), HttpStatus.BAD_REQUEST);
         }
         Order order = orderService.createOrder(orderCreationForm, currentUser.getId());
         return new ResponseEntity<>(new Response<>(OrderJson.mapFromOrder(order)), HttpStatus.OK);

@@ -17,10 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -59,7 +56,7 @@ public class DriverTasksController {
             @ApiImplicitParam(name = "Authorization", value = "Authorization header",
                     defaultValue = "%JWTTOKEN%", required = true, dataType = "string", paramType = "header")
     })
-    @GetMapping(ACTIVATE)
+    @PostMapping(ACTIVATE)
     public ResponseEntity<Response<String>> activateTask(@PathVariable("task_id") Long taskId,
                                                          @AuthenticationPrincipal CurrentUser currentUser) {
         try {
@@ -77,7 +74,7 @@ public class DriverTasksController {
             @ApiImplicitParam(name = "Authorization", value = "Authorization header",
                     defaultValue = "%JWTTOKEN%", required = true, dataType = "string", paramType = "header")
     })
-    @GetMapping(COMPLETE)
+    @PostMapping(COMPLETE)
     public ResponseEntity<Response<String>> completeTask(@PathVariable("task_id") Long taskId,
                                                          @AuthenticationPrincipal CurrentUser currentUser) {
         try {

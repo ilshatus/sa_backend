@@ -1,6 +1,7 @@
 package com.idc.idc.controller.driver;
 
 import com.idc.idc.CurrentUser;
+import com.idc.idc.dto.form.LocationForm;
 import com.idc.idc.dto.json.DriverJson;
 import com.idc.idc.exception.NotFoundException;
 import com.idc.idc.model.embeddable.CurrentLocation;
@@ -17,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -55,11 +57,15 @@ public class DriverController {
                     defaultValue = "%JWTTOKEN%", required = true, dataType = "string", paramType = "header")
     })
     @PostMapping(LOCATION)
-    public ResponseEntity<Response<String>> sendLocation(@RequestParam Double latitude,
-                                                         @RequestParam Double longitude,
-                                                         @AuthenticationPrincipal CurrentUser currentUser) {
+    public ResponseEntity<Response<String>> sendLocation(@RequestBody LocationForm location,
+                                                         @AuthenticationPrincipal CurrentUser currentUser,
+                                                         BindingResult errors) {
+        if (errors.hasErrors()) {
+            return new ResponseEntity<>(
+                    new Response<>(null, errors), HttpStatus.BAD_REQUEST);
+        }
         try {
-            vehicleService.updatePositionOfVehicle(currentUser.getId(), new CurrentLocation(latitude, longitude));
+            vehicleService.updatePositionOfVehicle(currentUser.getId(), location.toCurrentLocation());
             return new ResponseEntity<>(new Response<>("ok"), HttpStatus.OK);
         } catch (NotFoundException e) {
             return new ResponseEntity<>(new Response<>(null, e.getMessage()), HttpStatus.NOT_FOUND);
