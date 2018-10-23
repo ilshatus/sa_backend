@@ -19,6 +19,9 @@ public class OrderJson {
 
     private Long id;
 
+    @JsonProperty("creation_date")
+    private Long creationDate;
+
     @JsonProperty("due_date")
     private Long dueDate;
 
@@ -44,6 +47,7 @@ public class OrderJson {
     public static OrderJson mapFromOrder(Order order) {
         return OrderJson.builder()
                 .id(order.getId())
+                .creationDate(order.getCreatedDate().getTime())
                 .dueDate(order.getDueDate().getTime())
                 .origin(OrderOriginJson.mapFromOrderOrigin(order.getOrigin()))
                 .destination(OrderDestinationJson.mapFromOrderDestination(order.getDestination()))
