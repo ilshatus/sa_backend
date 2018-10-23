@@ -27,15 +27,12 @@ import java.util.List;
 public class VehicleServiceImpl implements VehicleService {
     private VehicleRepository vehicleRepository;
     private UserService userService;
-    private GeoApiContext geoApiContext;
 
     @Autowired
     public VehicleServiceImpl(VehicleRepository vehicleRepository,
-                              UserService userService,
-                              GeoApiContext geoApiContext) {
+                              UserService userService) {
         this.vehicleRepository = vehicleRepository;
         this.userService = userService;
-        this.geoApiContext = geoApiContext;
     }
 
     @Override
@@ -57,22 +54,19 @@ public class VehicleServiceImpl implements VehicleService {
 
     @Override
     public List<Vehicle> getNearestVehicles(Order order, Integer limit) {
-        new GeoApiContext.Builder(new GaeRequestHandler.Builder())
-                .apiKey("AIza...")
-                .build();
         List<Vehicle> drivers = getAllVehicles();
         OrderOrigin orderLoc = order.getOrigin();
         drivers.sort((Vehicle o1, Vehicle o2) -> {
             CurrentLocation loc1 = o1.getLocation();
             CurrentLocation loc2 = o2.getLocation();
-            DirectionsApiRequest request = DirectionsApi.newRequest(geoApiContext)
+            /*DirectionsApiRequest request = DirectionsApi.newRequest(geoApiContext)
                     .origin(new LatLng(loc1.getLatitude(), loc1.getLongitude()))
                     .destination(new LatLng(orderLoc.getOriginLatitude(), orderLoc.getOriginLongitude()));
             try {
                 DirectionsResult result = request.await();
             } catch (Exception e) {
 
-            }
+            }*/
             Double dist1 = distance(loc1, orderLoc);
             Double dist2 = distance(loc2, orderLoc);
             if (dist1.equals(dist2))
