@@ -1,5 +1,11 @@
 package com.idc.idc.service.impl;
 
+import com.google.maps.DirectionsApi;
+import com.google.maps.DirectionsApiRequest;
+import com.google.maps.GaeRequestHandler;
+import com.google.maps.GeoApiContext;
+import com.google.maps.model.DirectionsResult;
+import com.google.maps.model.LatLng;
 import com.idc.idc.exception.NotFoundException;
 import com.idc.idc.model.Order;
 import com.idc.idc.model.Vehicle;
@@ -21,12 +27,15 @@ import java.util.List;
 public class VehicleServiceImpl implements VehicleService {
     private VehicleRepository vehicleRepository;
     private UserService userService;
+    private GeoApiContext geoApiContext;
 
     @Autowired
     public VehicleServiceImpl(VehicleRepository vehicleRepository,
-                              UserService userService) {
+                              UserService userService,
+                              GeoApiContext geoApiContext) {
         this.vehicleRepository = vehicleRepository;
         this.userService = userService;
+        this.geoApiContext = geoApiContext;
     }
 
     @Override
@@ -48,11 +57,22 @@ public class VehicleServiceImpl implements VehicleService {
 
     @Override
     public List<Vehicle> getNearestVehicles(Order order, Integer limit) {
+        new GeoApiContext.Builder(new GaeRequestHandler.Builder())
+                .apiKey("AIza...")
+                .build();
         List<Vehicle> drivers = getAllVehicles();
         OrderOrigin orderLoc = order.getOrigin();
         drivers.sort((Vehicle o1, Vehicle o2) -> {
             CurrentLocation loc1 = o1.getLocation();
             CurrentLocation loc2 = o2.getLocation();
+            DirectionsApiRequest request = DirectionsApi.newRequest(geoApiContext)
+                    .origin(new LatLng(loc1.getLatitude(), loc1.getLongitude()))
+                    .destination(new LatLng(orderLoc.getOriginLatitude(), orderLoc.getOriginLongitude()));
+            try {
+                DirectionsResult result = request.await();
+            } catch (Exception e) {
+
+            }
             Double dist1 = distance(loc1, orderLoc);
             Double dist2 = distance(loc2, orderLoc);
             if (dist1.equals(dist2))

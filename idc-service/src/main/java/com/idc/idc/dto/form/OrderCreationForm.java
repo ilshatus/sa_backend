@@ -22,6 +22,10 @@ public class OrderCreationForm {
     public static final String DESTINATION_LAT = "destination_lat";
     public static final String ORIGIN_LONG = "origin_long";
     public static final String DESTINATION_LONG = "destination_long";
+    public static final String ORIGIN_FULL_ADDRESS = "origin_full_address";
+    public static final String DESTINATION_FULL_ADDRESS = "destination_full_address";
+    public static final String ORIGIN_SHORT_ADDRESS = "origin_short_address";
+    public static final String DESTINATION_SHORT_ADDRESS = "destination_short_address";
 
     @NotNull(message = "The weight must not be null")
     @JsonProperty(value = WEIGHT, required = true)
@@ -55,6 +59,22 @@ public class OrderCreationForm {
     @JsonProperty(value = DESTINATION_LONG, required = true)
     private Double destinationLong;
 
+    @NotNull(message = "The origin full address must not be empty")
+    @JsonProperty(value = ORIGIN_FULL_ADDRESS, required = true)
+    private String originFullAddress;
+
+    @NotNull(message = "The destination full address must not be empty")
+    @JsonProperty(value = ORIGIN_FULL_ADDRESS, required = true)
+    private String destinationFullAddress;
+
+    @NotNull(message = "The origin short address must not be empty")
+    @JsonProperty(value = ORIGIN_SHORT_ADDRESS, required = true)
+    private String originShortAddress;
+
+    @NotNull(message = "The destination short address must not be empty")
+    @JsonProperty(value = ORIGIN_SHORT_ADDRESS, required = true)
+    private String destinationShortAddress;
+
     public Order toOrder() {
         return Order.
                 builder()
@@ -62,8 +82,10 @@ public class OrderCreationForm {
                 .worth(worth)
                 .description(description)
                 .dueDate(new Date(dueDate))
-                .origin(new OrderOrigin(originLat, originLong))
-                .destination(new OrderDestination(destinationLat, destinationLong))
+                .origin(new OrderOrigin(originLat, originLong,
+                        originFullAddress, originShortAddress))
+                .destination(new OrderDestination(destinationLat, destinationLong,
+                        destinationFullAddress, destinationShortAddress))
                 .build();
     }
 

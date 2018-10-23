@@ -46,10 +46,9 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public Order getOrder(String trackingCode) {
-        Order order = orderRepository.findOneByTrackingCode(trackingCode).orElseThrow(() -> new NotFoundException(
-                String.format("Order with tracking number %d not found", trackingCode)
+        return orderRepository.findOneByTrackingCode(trackingCode).orElseThrow(() -> new NotFoundException(
+                String.format("Order with tracking number %s not found", trackingCode)
         ));
-        return order;
     }
 
     @Override

@@ -19,10 +19,18 @@ public class OrderDestinationJson {
     @JsonProperty("destination_longitude")
     private Double destinationLongitude;
 
-    public static OrderDestinationJson mapFromOrderDestination(OrderDestination OrderDestination) {
+    @JsonProperty("destination_full_address")
+    private String destinationFullAddress;
+
+    @JsonProperty("destination_short_address")
+    private String destinationShortAddress;
+
+    public static OrderDestinationJson mapFromOrderDestination(OrderDestination orderDestination) {
         return OrderDestinationJson.builder()
-                .destinationLatitude(OrderDestination.getDestinationLatitude())
-                .destinationLongitude(OrderDestination.getDestinationLongitude())
+                .destinationLatitude(orderDestination.getDestinationLatitude())
+                .destinationLongitude(orderDestination.getDestinationLongitude())
+                .destinationFullAddress(orderDestination.getDestinationFullAddress())
+                .destinationShortAddress(orderDestination.getDestinationShortAddress())
                 .build();
     }
 }

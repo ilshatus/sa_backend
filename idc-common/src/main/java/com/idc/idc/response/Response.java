@@ -1,6 +1,5 @@
 package com.idc.idc.response;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.compress.utils.Lists;

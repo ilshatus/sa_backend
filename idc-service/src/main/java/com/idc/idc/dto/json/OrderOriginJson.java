@@ -19,11 +19,18 @@ public class OrderOriginJson {
     @JsonProperty("origin_longitude")
     private Double originLongitude;
 
-    public static OrderOriginJson mapFromOrderOrigin(OrderOrigin OrderOrigin) {
+    @JsonProperty("origin_full_address")
+    private String originFullAddress;
 
+    @JsonProperty("origin_short_address")
+    private String originShortAddress;
+
+    public static OrderOriginJson mapFromOrderOrigin(OrderOrigin orderOrigin) {
         return OrderOriginJson.builder()
-                .originLatitude(OrderOrigin.getOriginLatitude())
-                .originLongitude(OrderOrigin.getOriginLongitude())
+                .originLatitude(orderOrigin.getOriginLatitude())
+                .originLongitude(orderOrigin.getOriginLongitude())
+                .originFullAddress(orderOrigin.getOriginFullAddress())
+                .originShortAddress(orderOrigin.getOriginShortAddress())
                 .build();
     }
 }
