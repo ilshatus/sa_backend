@@ -64,7 +64,7 @@ public class OrderCreationForm {
     private String originFullAddress;
 
     @NotNull(message = "The destination full address must not be empty")
-    @JsonProperty(value = ORIGIN_FULL_ADDRESS, required = true)
+    @JsonProperty(value = DESTINATION_FULL_ADDRESS, required = true)
     private String destinationFullAddress;
 
     @NotNull(message = "The origin short address must not be empty")
@@ -72,7 +72,7 @@ public class OrderCreationForm {
     private String originShortAddress;
 
     @NotNull(message = "The destination short address must not be empty")
-    @JsonProperty(value = ORIGIN_SHORT_ADDRESS, required = true)
+    @JsonProperty(value = DESTINATION_SHORT_ADDRESS, required = true)
     private String destinationShortAddress;
 
     public Order toOrder() {
