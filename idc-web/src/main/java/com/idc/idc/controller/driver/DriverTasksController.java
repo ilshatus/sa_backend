@@ -70,7 +70,7 @@ public class DriverTasksController {
         }
     }
 
-    @ApiOperation("Activate task")
+    @ApiOperation("Complete task")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "Authorization", value = "Authorization header",
                     defaultValue = "%JWTTOKEN%", required = true, dataType = "string", paramType = "header")

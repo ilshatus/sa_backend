@@ -1,6 +1,7 @@
 package com.idc.idc.service;
 
 import com.idc.idc.dto.form.UserRegistrationForm;
+import com.idc.idc.model.Task;
 import com.idc.idc.model.users.Customer;
 import com.idc.idc.model.users.Driver;
 import com.idc.idc.model.users.Operator;
@@ -30,7 +31,11 @@ public interface UserService {
 
     Customer submitCustomer(Customer customer);
 
-    Operator submitOperator(Operator customer);
+    Operator submitOperator(Operator operator);
 
-    Driver submitDriver(Driver customer);
+    Driver submitDriver(Driver driver);
+
+    void setFirebaseTokenToDriver(Driver driver, String token);
+
+    void notifyDriver(Long driverId, Task task);
 }
