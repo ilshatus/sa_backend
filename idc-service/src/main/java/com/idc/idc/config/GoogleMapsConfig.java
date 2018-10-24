@@ -1,6 +1,5 @@
 package com.idc.idc.config;
 
-import com.google.maps.GaeRequestHandler;
 import com.google.maps.GeoApiContext;
 import com.idc.idc.settings.GoogleMapsSettings;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,10 +12,10 @@ public class GoogleMapsConfig {
     @Autowired
     private GoogleMapsSettings googleMapsSettings;
 
-    /*@Bean
+    @Bean
     public GeoApiContext geoApiContext() {
-        return new GeoApiContext.Builder(new GaeRequestHandler.Builder())
+        return new GeoApiContext.Builder()
                 .apiKey(googleMapsSettings.getApiKey())
                 .build();
-    }*/
+    }
 }

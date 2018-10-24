@@ -11,6 +11,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 @Api(tags = {"Operator.Auth"})
@@ -28,9 +29,16 @@ public class OperatorAuthController {
     }
 
     @ApiOperation(value = "Sign in by email and password")
-    @ApiResponses({ @ApiResponse(code = org.apache.http.HttpStatus.SC_UNAUTHORIZED, message = "Authentication failed") })
+    @ApiResponses({@ApiResponse(code = org.apache.http.HttpStatus.SC_UNAUTHORIZED, message = "Authentication failed"),
+            @ApiResponse(code = org.apache.http.HttpStatus.SC_BAD_REQUEST, message = "Empty credentials")})
     @PostMapping(LOGIN_URL)
-    public ResponseEntity<Response<TokenJson>> signIn(@RequestBody SignInForm form) {
+    public ResponseEntity<Response<TokenJson>> signIn(@RequestBody SignInForm form,
+                                                      BindingResult errors) {
+        if (errors.hasErrors()) {
+            return new ResponseEntity<>(
+                    new Response<>(null, errors), HttpStatus.BAD_REQUEST);
+        }
+
         String email = StringUtils.trim(form.getEmail()).toLowerCase();
         String password = form.getPassword();
 

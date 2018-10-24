@@ -2,37 +2,48 @@ package com.idc.idc.service.impl;
 
 import com.google.maps.DirectionsApi;
 import com.google.maps.DirectionsApiRequest;
-import com.google.maps.GaeRequestHandler;
 import com.google.maps.GeoApiContext;
+import com.google.maps.model.DirectionsLeg;
 import com.google.maps.model.DirectionsResult;
 import com.google.maps.model.LatLng;
 import com.idc.idc.exception.NotFoundException;
 import com.idc.idc.model.Order;
+import com.idc.idc.model.Task;
 import com.idc.idc.model.Vehicle;
 import com.idc.idc.model.embeddable.CurrentLocation;
 import com.idc.idc.model.embeddable.OrderOrigin;
 import com.idc.idc.model.enums.VehicleType;
 import com.idc.idc.model.users.Driver;
 import com.idc.idc.repository.VehicleRepository;
+import com.idc.idc.service.OrderService;
+import com.idc.idc.service.TaskService;
 import com.idc.idc.service.UserService;
 import com.idc.idc.service.VehicleService;
 import com.idc.idc.util.CollectionUtils;
+import com.idc.idc.util.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class VehicleServiceImpl implements VehicleService {
     private VehicleRepository vehicleRepository;
     private UserService userService;
+    private GeoApiContext geoApiContext;
+    private OrderService orderService;
 
     @Autowired
     public VehicleServiceImpl(VehicleRepository vehicleRepository,
-                              UserService userService) {
+                              UserService userService,
+                              GeoApiContext geoApiContext,
+                              OrderService orderService) {
         this.vehicleRepository = vehicleRepository;
         this.userService = userService;
+        this.geoApiContext = geoApiContext;
+        this.orderService = orderService;
     }
 
     @Override
@@ -53,31 +64,31 @@ public class VehicleServiceImpl implements VehicleService {
     }
 
     @Override
-    public List<Vehicle> getNearestVehicles(Order order, Integer limit) {
-        List<Vehicle> drivers = getAllVehicles();
+    public List<Vehicle> getNearestVehicles(Long orderId, Integer limit) {
+        Order order = orderService.getOrder(orderId);
         OrderOrigin orderLoc = order.getOrigin();
-        drivers.sort((Vehicle o1, Vehicle o2) -> {
-            CurrentLocation loc1 = o1.getLocation();
-            CurrentLocation loc2 = o2.getLocation();
-            /*DirectionsApiRequest request = DirectionsApi.newRequest(geoApiContext)
-                    .origin(new LatLng(loc1.getLatitude(), loc1.getLongitude()))
-                    .destination(new LatLng(orderLoc.getOriginLatitude(), orderLoc.getOriginLongitude()));
-            try {
-                DirectionsResult result = request.await();
-            } catch (Exception e) {
-
-            }*/
-            Double dist1 = distance(loc1, orderLoc);
-            Double dist2 = distance(loc2, orderLoc);
-            if (dist1.equals(dist2))
-                return 0;
-            if (dist1 < dist2) {
-                return 1;
-            } else {
-                return -1;
-            }
-        });
-        return CollectionUtils.subList(drivers, 0, limit);
+        List<Vehicle> vehicles = getAllVehicles();
+        List<Pair<Long, Vehicle>> tmp = vehicles.stream()
+                .map((Vehicle vehicle)->{
+                    CurrentLocation location = vehicle.getLocation();
+                    DirectionsApiRequest request = DirectionsApi.newRequest(geoApiContext)
+                            .origin(new LatLng(location.getLatitude(), location.getLongitude()))
+                            .destination(new LatLng(orderLoc.getOriginLatitude(), orderLoc.getOriginLongitude()));
+                    try {
+                        DirectionsResult result = request.await();
+                        Long shortestTime = Long.MAX_VALUE;
+                        if (result.routes.length > 0) {
+                            for (DirectionsLeg leg : result.routes[0].legs) {
+                                shortestTime = Math.min(shortestTime, leg.duration.inSeconds);
+                            }
+                        }
+                        return new Pair<>(shortestTime, vehicle);
+                    } catch (Exception e) {
+                        return new Pair<>(Long.MAX_VALUE, vehicle);
+                    }
+                }).collect(Collectors.toList());
+        vehicles = tmp.stream().limit(limit).map(Pair::getSecond).collect(Collectors.toList());
+        return vehicles;
     }
 
     @Override
