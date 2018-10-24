@@ -10,9 +10,11 @@ import java.util.List;
 public interface VehicleService {
     Vehicle getVehicle(Long id);
     List<Vehicle> getAllVehicles();
+    List<Vehicle> getAllVehicles(Integer limit, Integer offset);
     List<Vehicle> getVehiclesByType(VehicleType type);
     List<Vehicle> getNearestVehicles(Order order, Integer limit);
     Vehicle updatePositionOfVehicle(Long driverId, CurrentLocation location);
     Vehicle submitVehicle(Vehicle vehicle);
     List<Vehicle> getTracksRequiringDrivers();
+    CurrentLocation getVehicleLocation(Vehicle vehicle);
 }

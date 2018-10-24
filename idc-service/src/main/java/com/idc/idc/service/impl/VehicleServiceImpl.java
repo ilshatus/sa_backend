@@ -42,6 +42,16 @@ public class VehicleServiceImpl implements VehicleService {
     }
 
     @Override
+    public List<Vehicle> getAllVehicles(Integer limit, Integer offset) {
+        if (limit == null || offset == null){
+            return getAllVehicles();
+        }else{
+            return CollectionUtils.subList(getAllVehicles(),
+                    offset * limit, (offset + 1) * limit);
+        }
+    }
+
+    @Override
     public List<Vehicle> getVehiclesByType(VehicleType type) {
         return vehicleRepository.findAllByType(type);
     }
@@ -109,5 +119,10 @@ public class VehicleServiceImpl implements VehicleService {
             }
         }
         return tracksRequiringDrivers;
+    }
+
+    @Override
+    public CurrentLocation getVehicleLocation(Vehicle vehicle) {
+        return vehicle.getLocation();
     }
 }
