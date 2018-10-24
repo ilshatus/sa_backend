@@ -24,6 +24,7 @@ public class DriverAuthController {
     public static final String LOGIN_URL = "/login";
 
     private final Authenticator authenticator;
+    private UserService userService;
 
     public DriverAuthController(Authenticator authenticator) {
         this.authenticator = authenticator;
@@ -40,6 +41,10 @@ public class DriverAuthController {
         }
         String email = StringUtils.trim(form.getEmail()).toLowerCase();
         String password = form.getPassword();
+        String token = form.getFirebaseToken();
+        if (token != null){
+            userService.setFirebaseTokenToDriver(userService.getDriverByEmail(email), token);
+        }
 
         log.debug("Signing in with params account [{}]", email);
         try {
