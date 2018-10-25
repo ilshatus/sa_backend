@@ -17,11 +17,11 @@ public class CurrentLocationJson {
 
     private Double longitude;
 
-    public static CurrentLocationJson mapFromCurrentLocation(CurrentLocation CurrentLocation) {
-
+    public static CurrentLocationJson mapFromCurrentLocation(CurrentLocation currentLocation) {
+        if (currentLocation == null) return null;
         return CurrentLocationJson.builder()
-                .latitude(CurrentLocation.getLatitude())
-                .longitude(CurrentLocation.getLongitude())
+                .latitude(currentLocation.getLatitude())
+                .longitude(currentLocation.getLongitude())
                 .build();
     }
 }

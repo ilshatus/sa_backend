@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -48,10 +49,11 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public List<Task> getNotCompleteTasks(Integer limit, Integer offset) {
-        List<Task> tasks = Lists.emptyList();
+        List<Task> tasks = new ArrayList<>();
         for (TaskStatus taskStatus : TaskStatus.values()) {
-            if (!taskStatus.equals(TaskStatus.COMPLETE))
-                tasks.addAll(getTasksByStatus(taskStatus));
+            if (taskStatus.equals(TaskStatus.COMPLETE)) continue;
+            List<Task> tmp = getTasksByStatus(taskStatus);
+            tasks.addAll(tmp);
         }
         return CollectionUtils.subList(tasks,
                 offset * limit, (offset + 1) * limit);
@@ -99,8 +101,8 @@ public class TaskServiceImpl implements TaskService {
         Task task = getTask(taskId);
         Driver driver = userService.getDriver(driverId);
         if (!task.getVehicle().getDrivers().contains(driver)) {
-             throw new UnauthorizedException(
-                     String.format("Driver %d not authorized to modify task %d", driver.getId(), task.getId()));
+            throw new UnauthorizedException(
+                    String.format("Driver %d not authorized to modify task %d", driver.getId(), task.getId()));
         }
         task.setStatus(status);
         return submitTask(task);
@@ -115,7 +117,12 @@ public class TaskServiceImpl implements TaskService {
         orderService.changeStatus(orderId, OrderStatus.IN_PROGRESS);
         Vehicle vehicle = vehicleService.getVehicle(form.getVehicleId());
         task.setVehicle(vehicle);
+        List<Driver> drivers = vehicle.getDrivers();
         task.setRouteId(form.getRouteId());
-        return submitTask(task);
+        task = submitTask(task);
+        for (Driver driver : drivers) {
+            userService.notifyDriver(driver, task);
+        }
+        return task;
     }
 }

@@ -24,7 +24,7 @@ public class FirebaseConfig {
 
     @Bean
     public FirebaseApp firebaseApp() throws IOException {
-        Resource resource = resourceLoader.getResource("classpath:static/firebase_admin_sdk.json");
+        Resource resource = resourceLoader.getResource("classpath:static/idc-drivers-firebase.json");
 
         FirebaseOptions options = new FirebaseOptions.Builder()
                 .setCredentials(GoogleCredentials.fromStream(resource.getInputStream()))

@@ -1,6 +1,7 @@
 package com.idc.idc.controller.operator;
 
 import com.idc.idc.dto.form.CreateTaskForm;
+import com.idc.idc.dto.json.NearestVehiclesJson;
 import com.idc.idc.dto.json.OrderJson;
 import com.idc.idc.dto.json.TaskJson;
 import com.idc.idc.dto.json.VehicleJson;
@@ -8,10 +9,12 @@ import com.idc.idc.exception.NotFoundException;
 import com.idc.idc.model.Order;
 import com.idc.idc.model.Task;
 import com.idc.idc.model.Vehicle;
+import com.idc.idc.model.enums.OrderStatus;
 import com.idc.idc.response.Response;
 import com.idc.idc.service.OrderService;
 import com.idc.idc.service.TaskService;
 import com.idc.idc.service.VehicleService;
+import com.idc.idc.util.Pair;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -34,6 +37,7 @@ public class OperatorOrdersController {
     public static final String ROOT_URL = "/v1/operator/orders";
     public static final String ORDER_URL = "/{order_id}";
     public static final String CONFIRM_URL = ORDER_URL + "/confirm";
+    public static final String REJECT_URL = ORDER_URL + "/reject";
     public static final String NEAREST_VEHICLES = ORDER_URL + "/nearest/vehicles";
 
     private OrderService orderService;
@@ -82,14 +86,29 @@ public class OperatorOrdersController {
                     defaultValue = "%JWTTOKEN%", required = true, dataType = "string", paramType = "header")
     })
     @GetMapping(NEAREST_VEHICLES)
-    public ResponseEntity<Response<List<VehicleJson>>> getNearestVehicles(@PathVariable("order_id") Long orderId,
-                                                                          @RequestParam Integer limit) {
+    public ResponseEntity<Response<List<NearestVehiclesJson>>> getNearestVehicles(@PathVariable("order_id") Long orderId,
+                                                                                  @RequestParam Long timeToDeliver) {
         try {
-            List<Vehicle> vehicles = vehicleService.getNearestVehicles(orderId, limit);
-            List<VehicleJson> vehicleJsons = vehicles.stream()
-                    .map(VehicleJson::mapFromVehicle)
+            List<Pair<Long, Vehicle>> vehicles = vehicleService.getNearestVehicles(orderId, timeToDeliver);
+            List<NearestVehiclesJson> nearestVehiclesJsons = vehicles.stream()
+                    .map(val -> new NearestVehiclesJson(VehicleJson.mapFromVehicle(val.getSecond()), val.getFirst()))
                     .collect(Collectors.toList());
-            return new ResponseEntity<>(new Response<>(vehicleJsons), HttpStatus.OK);
+            return new ResponseEntity<>(new Response<>(nearestVehiclesJsons), HttpStatus.OK);
+        } catch (NotFoundException e) {
+            return new ResponseEntity<>(new Response<>(null, e.getMessage()), HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @ApiOperation("Reject order by id")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization", value = "Authorization header",
+                    defaultValue = "%JWTTOKEN%", required = true, dataType = "string", paramType = "header")
+    })
+    @PostMapping(REJECT_URL)
+    public ResponseEntity<Response<OrderJson>> rejectOrder(@PathVariable("order_id") Long orderId) {
+        try {
+            Order order = orderService.changeStatus(orderId, OrderStatus.REJECTED);
+            return new ResponseEntity<>(new Response<>(OrderJson.mapFromOrder(order)), HttpStatus.OK);
         } catch (NotFoundException e) {
             return new ResponseEntity<>(new Response<>(null, e.getMessage()), HttpStatus.NOT_FOUND);
         }
