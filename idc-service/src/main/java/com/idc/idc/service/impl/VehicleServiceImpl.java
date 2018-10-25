@@ -6,6 +6,7 @@ import com.google.maps.GeoApiContext;
 import com.google.maps.model.DirectionsLeg;
 import com.google.maps.model.DirectionsResult;
 import com.google.maps.model.LatLng;
+import com.idc.idc.dto.form.CreateVehicleForm;
 import com.idc.idc.exception.NotFoundException;
 import com.idc.idc.model.Order;
 import com.idc.idc.model.Task;
@@ -24,7 +25,10 @@ import com.idc.idc.util.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -47,6 +51,11 @@ public class VehicleServiceImpl implements VehicleService {
     }
 
     @Override
+    public Vehicle createVehicle(CreateVehicleForm form) {
+        return vehicleRepository.save(form.toVehicle());
+    }
+
+    @Override
     public Vehicle getVehicle(Long id) {
         return vehicleRepository.findOneById(id).orElseThrow(
                 () -> new NotFoundException(String.format("Vehicle %d not found", id))
@@ -64,12 +73,12 @@ public class VehicleServiceImpl implements VehicleService {
     }
 
     @Override
-    public List<Vehicle> getNearestVehicles(Long orderId, Integer limit) {
+    public List<Pair<Long, Vehicle>> getNearestVehicles(Long orderId, Long timeToDeliver) {
         Order order = orderService.getOrder(orderId);
         OrderOrigin orderLoc = order.getOrigin();
         List<Vehicle> vehicles = getAllVehicles();
-        List<Pair<Long, Vehicle>> tmp = vehicles.stream()
-                .map((Vehicle vehicle)->{
+        return vehicles.stream()
+                .map((Vehicle vehicle) -> {
                     CurrentLocation location = vehicle.getLocation();
                     DirectionsApiRequest request = DirectionsApi.newRequest(geoApiContext)
                             .origin(new LatLng(location.getLatitude(), location.getLongitude()))
@@ -79,16 +88,18 @@ public class VehicleServiceImpl implements VehicleService {
                         Long shortestTime = Long.MAX_VALUE;
                         if (result.routes.length > 0) {
                             for (DirectionsLeg leg : result.routes[0].legs) {
-                                shortestTime = Math.min(shortestTime, leg.duration.inSeconds);
+                                Long has = (leg.duration.inSeconds + timeToDeliver) * 1000 + Instant.now().toEpochMilli(); // convert to milliseconds
+                                Long need = order.getDueDate().getTime();
+
+                                if (has <= need)
+                                    shortestTime = Math.min(shortestTime, leg.duration.inSeconds);
                             }
                         }
                         return new Pair<>(shortestTime, vehicle);
                     } catch (Exception e) {
                         return new Pair<>(Long.MAX_VALUE, vehicle);
                     }
-                }).collect(Collectors.toList());
-        vehicles = tmp.stream().limit(limit).map(Pair::getSecond).collect(Collectors.toList());
-        return vehicles;
+                }).filter(val -> val.getFirst() != Long.MAX_VALUE).sorted().collect(Collectors.toList());
     }
 
     @Override
@@ -107,23 +118,6 @@ public class VehicleServiceImpl implements VehicleService {
         return vehicleRepository.save(vehicle);
     }
 
-    private Double distance(CurrentLocation loc, OrderOrigin origin) {
-        double R = 6371e3; // metres
-        double lat1 = loc.getLatitude() * Math.PI / 180;
-        double lat2 = origin.getOriginLatitude() * Math.PI / 180;
-        double lon1 = loc.getLongitude() * Math.PI / 180;
-        double lon2 = origin.getOriginLongitude() * Math.PI / 180;
-
-        double deltaF = lat2 - lat1;
-        double deltaLambda = lon2 - lon1;
-
-        double a = Math.sin(deltaF / 2) * Math.sin(deltaF / 2) +
-                Math.cos(lat1) * Math.cos(lat2) *
-                        Math.sin(deltaLambda / 2) * Math.sin(deltaLambda / 2);
-        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-        return R * c;
-    }
-
     @Override
     public List<Vehicle> getTracksRequiringDrivers() {
         List<Vehicle> tracks = getVehiclesByType(VehicleType.TRACK);
@@ -134,5 +128,14 @@ public class VehicleServiceImpl implements VehicleService {
             }
         }
         return tracksRequiringDrivers;
+    }
+
+    @Override
+    public Vehicle addDriver(Long vehicleId, Long driverId) {
+        Vehicle vehicle = getVehicle(vehicleId);
+        Driver driver = userService.getDriver(driverId);
+        driver.setVehicle(vehicle);
+        userService.submitDriver(driver);
+        return getVehicle(vehicleId);
     }
 }
