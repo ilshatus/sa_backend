@@ -40,6 +40,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         this.userPasswordAuthProvider = userPasswordAuthProvider;
     }
 
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         HeaderAuthenticationFilter filter = new HeaderAuthenticationFilter();
@@ -55,7 +56,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .addFilter(filter)
                 .authorizeRequests()
-                .antMatchers("/**.js", "/**.html").permitAll()
+                .antMatchers("/**.js", "/**.html", "/**/login", "/**/register").permitAll()
                 .antMatchers("/v1/admin/**").hasAuthority("ADMIN")
                 .antMatchers("/v1/operator/**").hasAuthority(UserType.OPERATOR.name())
                 .antMatchers("/v1/driver/**").hasAuthority(UserType.DRIVER.name())

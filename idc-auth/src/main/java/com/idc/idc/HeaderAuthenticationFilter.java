@@ -60,7 +60,7 @@ public class HeaderAuthenticationFilter extends FilterSecurityInterceptor {
         try {
             user = authTokenService.getUserId(xAuth);
         } catch (AuthTokenParseException e) {
-            logger.info("Wrong token: " + e.getMessage());
+            log.info("Wrong token: " + e.getMessage());
             return null;
         }
 

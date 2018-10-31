@@ -20,6 +20,7 @@ public class Driver extends AbstractUserEntity {
     public static final String EMAIL = "email";
     public static final String NAME = "name";
     public static final String VEHICLE_ID = "vehicle_id";
+    public static final String FIREBASE_TOKEN = "firebase_token";
 
     @Embedded
     private CurrentLocation location;
@@ -33,4 +34,7 @@ public class Driver extends AbstractUserEntity {
     @ManyToOne
     @JoinColumn(name = VEHICLE_ID)
     private Vehicle vehicle;
+
+    @Column(name = FIREBASE_TOKEN)
+    private String firebaseToken;
 }
