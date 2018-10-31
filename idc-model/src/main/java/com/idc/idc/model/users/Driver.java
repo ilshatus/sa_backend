@@ -31,10 +31,10 @@ public class Driver extends AbstractUserEntity {
     @Column(name = NAME, length = 250)
     private String name;
 
-    @Column(name = FIREBASE_TOKEN, length = 200)
-    private String firebaseToken;
-
     @ManyToOne
     @JoinColumn(name = VEHICLE_ID)
     private Vehicle vehicle;
+
+    @Column(name = FIREBASE_TOKEN)
+    private String firebaseToken;
 }

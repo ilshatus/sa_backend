@@ -19,6 +19,8 @@ public class TaskJson {
 
     private VehicleJson vehicle;
 
+    private Long routeId;
+
     private TaskStatus status;
 
     public static TaskJson mapFromTask(Task task) {
@@ -27,6 +29,7 @@ public class TaskJson {
                 .id(task.getId())
                 .order(OrderJson.mapFromOrder(task.getOrder()))
                 .vehicle(VehicleJson.mapFromVehicle(task.getVehicle()))
+                .routeId(task.getRouteId())
                 .status(task.getStatus())
                 .build();
     }

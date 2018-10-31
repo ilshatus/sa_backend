@@ -35,7 +35,7 @@ public interface UserService {
 
     Driver submitDriver(Driver driver);
 
-    void setFirebaseTokenToDriver(Driver driver, String token);
+    void setFirebaseTokenToDriver(Long driverId, String token);
 
-    void notifyDriver(Long driverId, Task task);
+    void notifyDriver(Driver driver, Task task);
 }

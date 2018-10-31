@@ -47,6 +47,7 @@ public class DriverTasksController {
     @GetMapping
     public ResponseEntity<Response<List<TaskJson>>> getTasksInProgress(@AuthenticationPrincipal CurrentUser currentUser) {
         List<Task> tasks = taskService.getTasksByDriverAndStatus(currentUser.getId(), TaskStatus.IN_PROGRESS);
+        tasks.addAll(taskService.getTasksByDriverAndStatus(currentUser.getId(), TaskStatus.PENDING));
         List<TaskJson> taskJsons = tasks.stream().map(TaskJson::mapFromTask).collect(Collectors.toList());
         return new ResponseEntity<>(new Response<>(taskJsons), HttpStatus.OK);
     }

@@ -11,7 +11,7 @@ import javax.validation.constraints.NotNull;
 @Setter
 public class LocationForm {
     public static final String LATITUDE = "latitude";
-    public static final String LONGITUDE = "latitude";
+    public static final String LONGITUDE = "longitude";
 
     @NotNull(message = "The latitude must not be null")
     @JsonProperty(value = LATITUDE, required = true)

@@ -9,6 +9,7 @@ import com.idc.idc.util.Authenticator;
 import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.AuthenticationException;
@@ -26,8 +27,12 @@ public class DriverAuthController {
     private final Authenticator authenticator;
     private UserService userService;
 
-    public DriverAuthController(Authenticator authenticator) {
+
+    @Autowired
+    public DriverAuthController(Authenticator authenticator,
+                                UserService userService) {
         this.authenticator = authenticator;
+        this.userService = userService;
     }
 
     @ApiOperation(value = "Sign in by email and password")
@@ -42,13 +47,14 @@ public class DriverAuthController {
         String email = StringUtils.trim(form.getEmail()).toLowerCase();
         String password = form.getPassword();
         String token = form.getFirebaseToken();
-        if (token != null){
-            userService.setFirebaseTokenToDriver(userService.getDriverByEmail(email), token);
+        if (token == null){
+            return new ResponseEntity<>(
+                    new Response<>(null, "Firebase tokem mustn't be empty"), HttpStatus.BAD_REQUEST);
         }
-
         log.debug("Signing in with params account [{}]", email);
         try {
             TokenJson authentication = authenticator.authenticate(email, password, UserType.DRIVER);
+            userService.setFirebaseTokenToDriver(authentication.getUserId(), token);
             return new ResponseEntity<>(new Response<>(authentication), HttpStatus.OK);
         } catch (AuthenticationException e) {
             return new ResponseEntity<>(new Response<>(null, e.getMessage()), HttpStatus.UNAUTHORIZED);

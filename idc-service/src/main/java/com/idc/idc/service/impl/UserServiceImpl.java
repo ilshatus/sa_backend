@@ -168,13 +168,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void setFirebaseTokenToDriver(Driver driver, String token) {
+    public void setFirebaseTokenToDriver(Long driverId, String token) {
+        Driver driver = getDriver(driverId);
         driver.setFirebaseToken(token);
+        submitDriver(driver);
     }
 
     @Override
-    public void notifyDriver(Long driverId, Task task) {
-        Driver driver = getDriver(driverId);
+    public void notifyDriver(Driver driver, Task task) {
         if (StringUtils.isBlank(driver.getFirebaseToken())) {
             log.info("Driver {} hasn't firebase token", driver.getId());
             return;
@@ -185,6 +186,7 @@ public class UserServiceImpl implements UserService {
                 .build();
         try {
             firebaseMessaging.send(message);
+            log.info("Notification successfully sent");
         } catch (FirebaseMessagingException e) {
             log.info("Failed to send message to driver {}", driver.getId());
         }
