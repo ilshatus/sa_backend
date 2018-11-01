@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 public class DriverAuthController {
     public static final String ROOT_URL = "/v1/driver";
     public static final String LOGIN_URL = "/login";
+    public static final String LOGOUT_URL = "/logout";
 
     private final Authenticator authenticator;
     private UserService userService;
@@ -59,5 +61,12 @@ public class DriverAuthController {
         } catch (AuthenticationException e) {
             return new ResponseEntity<>(new Response<>(null, e.getMessage()), HttpStatus.UNAUTHORIZED);
         }
+    }
+
+    @ApiOperation(value = "Log out")
+    @PostMapping(LOGOUT_URL)
+    public ResponseEntity<Response<String>> logout(@AuthenticationPrincipal Long driverId) {
+        userService.setFirebaseTokenToDriver(driverId, "");
+        return new ResponseEntity<>(new Response<>("success"), HttpStatus.OK);
     }
 }

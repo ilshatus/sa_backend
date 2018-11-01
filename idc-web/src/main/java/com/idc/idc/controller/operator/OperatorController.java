@@ -1,9 +1,7 @@
 package com.idc.idc.controller.operator;
 
 import com.idc.idc.CurrentUser;
-import com.idc.idc.controller.driver.DriverController;
 import com.idc.idc.dto.json.OperatorJson;
-import com.idc.idc.dto.json.OrderJson;
 import com.idc.idc.model.users.Operator;
 import com.idc.idc.response.Response;
 import com.idc.idc.service.UserService;

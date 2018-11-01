@@ -1,6 +1,5 @@
 package com.idc.idc.dto.json;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.idc.idc.model.users.Operator;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

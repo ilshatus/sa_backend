@@ -17,6 +17,8 @@ import java.util.concurrent.Executors;
 @EnableScheduling
 @EnableAsync
 public class WebApplication extends SpringBootServletInitializer implements SchedulingConfigurer {
+
+
     public static void main(String[] args) {
         SpringApplication.run(WebApplication.class, args);
     }
