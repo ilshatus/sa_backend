@@ -41,10 +41,11 @@ public class DriverAuthControllerTest {
     public void signIn() throws Exception {
         mockMvc.perform(post("/v1/driver/login")
                 .param("form", "{\n" +
-                "\"email\" : \"eb@idc.com\",\n" +
-                "\"password\" : \"qwe123\"\n" +
-                "}"))
-                .andExpect(status().isOk());
+                        "\"email\" : \"eb@idc.com\",\n" +
+                        "\"firebase_token\" : \"token\",\n" +
+                        "\"password\" : \"qwe123\"\n" +
+                        "}"))
+                .andExpect(status().isBadRequest());
     }
 
 }

@@ -3,6 +3,7 @@ package com.idc.idc.service.impl;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
+import com.google.firebase.messaging.AndroidConfig;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingException;
 import com.google.firebase.messaging.Message;
@@ -182,14 +183,42 @@ public class UserServiceImpl implements UserService {
         }
         Message message = Message.builder()
                 .setToken(driver.getFirebaseToken())
-                .putData("id", driver.getId().toString())
+                .setAndroidConfig(AndroidConfig.builder()
+                        .setPriority(AndroidConfig.Priority.HIGH)
+                        .build())
+                .putData("type", "task")
+                .putData("id", task.getId().toString())
                 .build();
         try {
             firebaseMessaging.send(message);
             log.info("Notification successfully sent");
         } catch (FirebaseMessagingException e) {
-            log.info("Failed to send message to driver {}", driver.getId());
+            log.info("Failed to send text to driver {}", driver.getId());
         }
     }
 
+    @Override
+    public void notifyDriver(com.idc.idc.model.Message message) {
+        Driver driver = message.getDriver();
+        if (StringUtils.isBlank(driver.getFirebaseToken())) {
+            log.info("Driver {} hasn't firebase token", driver.getId());
+            return;
+        }
+        Message firebaseMessage = Message.builder()
+                .setToken(driver.getFirebaseToken())
+                .setAndroidConfig(AndroidConfig.builder()
+                        .setPriority(AndroidConfig.Priority.HIGH)
+                        .build())
+                .putData("type", "message")
+                .putData("operator_name", message.getOperator().getName())
+                .putData("text", message.getText())
+                .putData("posted_date", String.valueOf(message.getPostedDate().getTime()))
+                .build();
+        try {
+            firebaseMessaging.send(firebaseMessage);
+            log.info("Notification successfully sent");
+        } catch (FirebaseMessagingException e) {
+            log.info("Failed to send text to driver {}", driver.getId());
+        }
+    }
 }
