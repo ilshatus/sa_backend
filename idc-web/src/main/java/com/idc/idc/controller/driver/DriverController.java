@@ -4,7 +4,6 @@ import com.idc.idc.CurrentUser;
 import com.idc.idc.dto.form.LocationForm;
 import com.idc.idc.dto.json.DriverJson;
 import com.idc.idc.exception.NotFoundException;
-import com.idc.idc.model.embeddable.CurrentLocation;
 import com.idc.idc.model.users.Driver;
 import com.idc.idc.response.Response;
 import com.idc.idc.service.UserService;

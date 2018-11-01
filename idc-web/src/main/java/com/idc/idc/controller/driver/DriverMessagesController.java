@@ -3,11 +3,8 @@ package com.idc.idc.controller.driver;
 import com.idc.idc.CurrentUser;
 import com.idc.idc.dto.form.PostMessageForm;
 import com.idc.idc.dto.json.MessageJson;
-import com.idc.idc.dto.json.TaskJson;
 import com.idc.idc.exception.NotFoundException;
 import com.idc.idc.model.Message;
-import com.idc.idc.model.Task;
-import com.idc.idc.model.enums.TaskStatus;
 import com.idc.idc.response.Response;
 import com.idc.idc.service.MessageService;
 import com.idc.idc.websocket.MessageEventHandler;
@@ -19,10 +16,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
