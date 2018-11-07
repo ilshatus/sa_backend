@@ -1,5 +1,6 @@
 package com.idc.idc.controller.driver;
 
+import com.idc.idc.CurrentUser;
 import com.idc.idc.UserType;
 import com.idc.idc.dto.form.SignInForm;
 import com.idc.idc.dto.json.TokenJson;
@@ -65,8 +66,8 @@ public class DriverAuthController {
 
     @ApiOperation(value = "Log out")
     @PostMapping(LOGOUT_URL)
-    public ResponseEntity<Response<String>> logout(@AuthenticationPrincipal Long driverId) {
-        userService.setFirebaseTokenToDriver(driverId, "");
+    public ResponseEntity<Response<String>> logout(@AuthenticationPrincipal CurrentUser currentUser) {
+        userService.setFirebaseTokenToDriver(currentUser.getId(), "");
         return new ResponseEntity<>(new Response<>("success"), HttpStatus.OK);
     }
 }
