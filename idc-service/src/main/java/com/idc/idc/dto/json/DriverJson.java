@@ -1,5 +1,6 @@
 package com.idc.idc.dto.json;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.idc.idc.model.users.Driver;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -18,12 +19,16 @@ public class DriverJson {
 
     private String name;
 
-    public static DriverJson mapFromDriver(Driver Driver) {
+    @JsonProperty("avatar_url")
+    private String avatarUrl;
+
+    public static DriverJson mapFromDriver(Driver driver) {
 
         return DriverJson.builder()
-                .id(Driver.getId())
-                .email(Driver.getEmail())
-                .name(Driver.getName())
+                .id(driver.getId())
+                .email(driver.getEmail())
+                .name(driver.getName())
+                .avatarUrl(driver.getAvatarUrl())
                 .build();
     }
 }

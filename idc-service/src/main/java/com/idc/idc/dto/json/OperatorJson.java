@@ -1,5 +1,6 @@
 package com.idc.idc.dto.json;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.idc.idc.model.users.Operator;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -20,13 +21,17 @@ public class OperatorJson {
 
     private Boolean admin;
 
-    public static OperatorJson mapFromOperator(Operator Operator) {
+    @JsonProperty("avatar_url")
+    private String avatarUrl;
+
+    public static OperatorJson mapFromOperator(Operator operator) {
 
         return OperatorJson.builder()
-                .id(Operator.getId())
-                .email(Operator.getEmail())
-                .name(Operator.getName())
-                .admin(Operator.getAdmin())
+                .id(operator.getId())
+                .email(operator.getEmail())
+                .name(operator.getName())
+                .admin(operator.getAdmin())
+                .avatarUrl(operator.getAvatarUrl())
                 .build();
     }
 }

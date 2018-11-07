@@ -2,6 +2,7 @@ package com.idc.idc.controller.operator.admin;
 
 import com.idc.idc.dto.form.UserRegistrationForm;
 import com.idc.idc.exception.RegistrationException;
+import com.idc.idc.exception.StorageException;
 import com.idc.idc.response.Response;
 import com.idc.idc.service.UserService;
 import io.swagger.annotations.*;
@@ -12,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 
@@ -41,7 +43,8 @@ public class PersonnelRegistration {
     @ApiResponses({@ApiResponse(code = org.apache.http.HttpStatus.SC_BAD_REQUEST, message = "Registration failed")})
     @PostMapping(REGISTER_OPERATOR)
     public ResponseEntity<Response<String>> registerOperator(
-            @Valid @ModelAttribute UserRegistrationForm userRegistrationForm,
+            @RequestParam("image_file") MultipartFile imageFile,
+            @Valid @RequestBody UserRegistrationForm userRegistrationForm,
             BindingResult errors) {
 
         if (errors.hasErrors()) {
@@ -53,7 +56,7 @@ public class PersonnelRegistration {
         log.debug("Register operator with email [{}]", email);
 
         try {
-            userService.registerOperator(userRegistrationForm);
+            userService.registerOperator(userRegistrationForm, getDataFromMultipartFile(imageFile));
             log.info("Successfully registered operator with email [{}]", userRegistrationForm.getEmail());
             return new ResponseEntity<>(new Response<>("success"), HttpStatus.OK);
         } catch (RegistrationException e) {
@@ -69,7 +72,8 @@ public class PersonnelRegistration {
     @ApiResponses({@ApiResponse(code = org.apache.http.HttpStatus.SC_BAD_REQUEST, message = "Registration failed")})
     @PostMapping(REGISTER_DRIVER)
     public ResponseEntity<Response<String>> registerDriver(
-            @Valid @ModelAttribute UserRegistrationForm userRegistrationForm,
+            @RequestParam("image_file") MultipartFile imageFile,
+            @Valid @RequestBody UserRegistrationForm userRegistrationForm,
             BindingResult errors) {
 
         if (errors.hasErrors()) {
@@ -83,11 +87,26 @@ public class PersonnelRegistration {
 
 
         try {
-            userService.registerDriver(userRegistrationForm);
+            userService.registerDriver(userRegistrationForm, getDataFromMultipartFile(imageFile));
             log.info("Successfully registered driver with email [{}]", userRegistrationForm.getEmail());
             return new ResponseEntity<>(new Response<>("success"), HttpStatus.OK);
         } catch (RegistrationException e) {
             return new ResponseEntity<>(new Response<>(null, e.getMessage()), HttpStatus.BAD_REQUEST);
         }
+    }
+
+    private byte[] getDataFromMultipartFile(MultipartFile file) {
+        if (file == null || file.isEmpty()) {
+            return null;
+        }
+        byte[] data;
+        try {
+            data = file.getBytes();
+        } catch (Exception e) {
+            log.warn("Failed to get image from file", e);
+            return null;
+        }
+
+        return data;
     }
 }

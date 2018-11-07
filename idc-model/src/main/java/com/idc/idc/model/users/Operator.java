@@ -21,6 +21,7 @@ public class Operator extends AbstractUserEntity {
     public static final String EMAIL = "email";
     public static final String NAME = "name";
     public static final String ADMIN = "admin";
+    public static final String AVATAR_URL = "avatarUrl";
 
     @Column(name = EMAIL, length = 100, unique = true)
     private String email;
@@ -30,4 +31,7 @@ public class Operator extends AbstractUserEntity {
 
     @Column(name = ADMIN)
     private Boolean admin;
+
+    @Column(name = AVATAR_URL)
+    private String avatarUrl;
 }
