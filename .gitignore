@@ -6,3 +6,4 @@ var/
 *.log
 *.properties
 *.json
+*.p12

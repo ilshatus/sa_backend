@@ -58,9 +58,9 @@ public class OperatorOrdersController {
                     defaultValue = "%JWTTOKEN%", required = true, dataType = "string", paramType = "header")
     })
     @GetMapping
-    public ResponseEntity<Response<List<OrderJson>>> getAllOrders(@RequestParam Integer limit,
-                                                                  @RequestParam Integer offset) {
-        List<Order> orders = orderService.getAllOrders(limit, offset);
+    public ResponseEntity<Response<List<OrderJson>>> getAllOrders(@RequestParam(required = false, defaultValue = "10") Integer limit,
+                                                                  @RequestParam(required = false, defaultValue = "0") Integer offset) {
+        List<Order> orders = orderService.getOrders(limit, offset);
         List<OrderJson> orderJsons = orders.stream().map(OrderJson::mapFromOrder).collect(Collectors.toList());
         return new ResponseEntity<>(new Response<>(orderJsons), HttpStatus.OK);
     }
