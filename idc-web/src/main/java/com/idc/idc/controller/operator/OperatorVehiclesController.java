@@ -3,8 +3,11 @@ package com.idc.idc.controller.operator;
 import com.idc.idc.dto.form.CreateVehicleForm;
 import com.idc.idc.dto.json.VehicleJson;
 import com.idc.idc.exception.NotFoundException;
+import com.idc.idc.model.Task;
 import com.idc.idc.model.Vehicle;
+import com.idc.idc.model.enums.TaskStatus;
 import com.idc.idc.response.Response;
+import com.idc.idc.service.TaskService;
 import com.idc.idc.service.VehicleService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -31,10 +34,13 @@ public class OperatorVehiclesController {
     public static final String ADD_DRIVER_URL = VEHICLE_URL + "/driver";
 
     private VehicleService vehicleService;
+    private TaskService taskService;
 
     @Autowired
-    public OperatorVehiclesController(VehicleService vehicleService) {
+    public OperatorVehiclesController(VehicleService vehicleService,
+                                      TaskService taskService) {
         this.vehicleService = vehicleService;
+        this.taskService = taskService;
     }
 
     @ApiOperation("Get all vehicles")
@@ -45,7 +51,14 @@ public class OperatorVehiclesController {
     @GetMapping
     public ResponseEntity<Response<List<VehicleJson>>> getAllVehicles() {
         List<Vehicle> vehicles = vehicleService.getAllVehicles();
-        List<VehicleJson> vehicleJsons = vehicles.stream().map(VehicleJson::mapFromVehicle).collect(Collectors.toList());
+        List<VehicleJson> vehicleJsons = vehicles.stream()
+                .map(vehicle -> {
+                    Task task = null;
+                    List<Task> tasks = taskService.getTasksByVehicleAndStatus(vehicle, TaskStatus.IN_PROGRESS);
+                    if (!tasks.isEmpty()) task = tasks.get(0);
+                    return VehicleJson.mapFromVehicle(vehicle, task);
+                })
+                .collect(Collectors.toList());
         return new ResponseEntity<>(new Response<>(vehicleJsons), HttpStatus.OK);
     }
 
@@ -58,7 +71,10 @@ public class OperatorVehiclesController {
     public ResponseEntity<Response<VehicleJson>> getVehicle(@PathVariable("vehicle_id") Long vehicleId) {
         try {
             Vehicle vehicle = vehicleService.getVehicle(vehicleId);
-            return new ResponseEntity<>(new Response<>(VehicleJson.mapFromVehicle(vehicle)), HttpStatus.OK);
+            Task task = null;
+            List<Task> tasks = taskService.getTasksByVehicleAndStatus(vehicle, TaskStatus.IN_PROGRESS);
+            if (!tasks.isEmpty()) task = tasks.get(0);
+            return new ResponseEntity<>(new Response<>(VehicleJson.mapFromVehicle(vehicle, task)), HttpStatus.OK);
         } catch (NotFoundException e) {
             return new ResponseEntity<>(new Response<>(null, e.getMessage()), HttpStatus.NOT_FOUND);
         }

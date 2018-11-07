@@ -1,6 +1,8 @@
 package com.idc.idc.dto.json;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.idc.idc.model.Task;
 import com.idc.idc.model.Vehicle;
 import com.idc.idc.model.enums.VehicleType;
 import lombok.AllArgsConstructor;
@@ -31,7 +33,10 @@ public class VehicleJson {
     @JsonProperty("current_location")
     private CurrentLocationJson currentLocation;
 
-    public static VehicleJson mapFromVehicle(Vehicle vehicle) {
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private SimpleTaskJson task;
+
+    public static VehicleJson mapFromVehicle(Vehicle vehicle, Task task) {
         return VehicleJson.builder()
                 .id(vehicle.getId())
                 .type(vehicle.getType())
@@ -39,6 +44,20 @@ public class VehicleJson {
                 .model(vehicle.getModel())
                 .drivers(vehicle.getDrivers() != null ?
                     vehicle.getDrivers().stream().map(DriverJson::mapFromDriver).collect(Collectors.toList()) : null
+                )
+                .task(SimpleTaskJson.mapFromTask(task))
+                .currentLocation(CurrentLocationJson.mapFromCurrentLocation(vehicle.getLocation()))
+                .build();
+    }
+
+    public static VehicleJson mapFromVehicle(Vehicle vehicle) {
+        return VehicleJson.builder()
+                .id(vehicle.getId())
+                .type(vehicle.getType())
+                .idNumber(vehicle.getIdNumber())
+                .model(vehicle.getModel())
+                .drivers(vehicle.getDrivers() != null ?
+                        vehicle.getDrivers().stream().map(DriverJson::mapFromDriver).collect(Collectors.toList()) : null
                 )
                 .currentLocation(CurrentLocationJson.mapFromCurrentLocation(vehicle.getLocation()))
                 .build();

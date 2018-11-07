@@ -5,6 +5,7 @@ import com.idc.idc.exception.NotFoundException;
 import com.idc.idc.model.Order;
 import com.idc.idc.model.embeddable.CurrentLocation;
 import com.idc.idc.model.enums.OrderStatus;
+import com.idc.idc.model.users.Customer;
 import com.idc.idc.repository.OrderRepository;
 import com.idc.idc.service.OrderService;
 import com.idc.idc.service.UserService;
@@ -12,6 +13,8 @@ import com.idc.idc.util.CollectionUtils;
 import com.idc.idc.util.TrackingCodeUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -52,9 +55,18 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<Order> getAllOrders(Integer limit, Integer offset) {
-        return CollectionUtils.subList(orderRepository.findAll(),
-                offset * limit, (offset + 1) * limit);
+    public List<Order> getOrders(Integer limit, Integer offset) {
+        PageRequest pageRequest = new PageRequest(offset, limit,
+                Sort.Direction.DESC, "id");
+        return orderRepository.findAll(pageRequest).getContent();
+    }
+
+    @Override
+    public List<Order> getOrdersOfCustomer(Long customerId, Integer limit, Integer offset) {
+        Customer customer = userService.getCustomer(customerId);
+        PageRequest pageRequest = new PageRequest(offset, limit,
+                Sort.Direction.DESC, "id");
+        return orderRepository.findAllByCustomer(customer, pageRequest);
     }
 
     @Override
