@@ -1,6 +1,7 @@
 package com.idc.idc.repository;
 
 import com.idc.idc.model.Vehicle;
+import com.idc.idc.model.enums.TaskStatus;
 import com.idc.idc.model.enums.VehicleType;
 import org.springframework.data.jpa.repository.JpaRepository;
 

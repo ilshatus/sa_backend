@@ -5,6 +5,7 @@ import com.google.maps.DirectionsApiRequest;
 import com.google.maps.GeoApiContext;
 import com.google.maps.model.DirectionsLeg;
 import com.google.maps.model.DirectionsResult;
+import com.google.maps.model.Distance;
 import com.google.maps.model.LatLng;
 import com.idc.idc.dto.form.CreateVehicleForm;
 import com.idc.idc.exception.NotFoundException;
@@ -13,6 +14,7 @@ import com.idc.idc.model.Task;
 import com.idc.idc.model.Vehicle;
 import com.idc.idc.model.embeddable.CurrentLocation;
 import com.idc.idc.model.embeddable.OrderOrigin;
+import com.idc.idc.model.enums.TaskStatus;
 import com.idc.idc.model.enums.VehicleType;
 import com.idc.idc.model.users.Driver;
 import com.idc.idc.repository.VehicleRepository;
@@ -38,16 +40,23 @@ public class VehicleServiceImpl implements VehicleService {
     private UserService userService;
     private GeoApiContext geoApiContext;
     private OrderService orderService;
+    private TaskService taskService;
+    private VehicleService vehicleService;
+    private Date lastModified;
 
     @Autowired
     public VehicleServiceImpl(VehicleRepository vehicleRepository,
                               UserService userService,
                               GeoApiContext geoApiContext,
-                              OrderService orderService) {
+                              OrderService orderService,
+                              TaskService taskService,
+                              VehicleService vehicleService) {
         this.vehicleRepository = vehicleRepository;
         this.userService = userService;
         this.geoApiContext = geoApiContext;
         this.orderService = orderService;
+        this.taskService = taskService;
+        this.vehicleService = vehicleService;
     }
 
     @Override
@@ -111,6 +120,34 @@ public class VehicleServiceImpl implements VehicleService {
         Vehicle vehicle = driver.getVehicle();
         vehicle.setLocation(location);
         return submitVehicle(vehicle);
+    }
+
+    private CurrentLocation getNextPositionOfVehicle(Long vehicleId) {
+        Vehicle vehicle = vehicleService.getVehicle(vehicleId);
+        if (vehicle == null) {
+            throw new NotFoundException(String.format("Vehicle %d do not found", vehicleId));
+        }
+
+        CurrentLocation location = vehicle.getLocation();
+        lastModified = vehicle.getLastModifiedDate();
+        long secsSinceLastUpdate = (System.currentTimeMillis() - lastModified.getTime())/1000;
+
+        CurrentLocation destination = taskService.getTasksByVehicleAndStatus(vehicle, TaskStatus.IN_PROGRESS).get(0).getOrder().getLocation();
+        DirectionsApiRequest request = DirectionsApi.newRequest(geoApiContext)
+                .origin(new LatLng(location.getLatitude(), location.getLongitude()))
+                .destination(new LatLng(destination.getLatitude(), destination.getLongitude()));
+
+        try {
+            DirectionsResult result = request.await();
+            long dist = 0L;
+            int i = 0;
+            while (dist < 2000*secsSinceLastUpdate){  // 2 km per sec
+                dist += result.routes[0].legs[0].steps[i++].distance.inMeters;
+            }
+            vehicle.setLocation(new CurrentLocation(result.routes[0].legs[0].steps[i].endLocation.lat, result.routes[0].legs[0].steps[i].endLocation.lng));
+        } catch (Exception e){
+        }
+        return submitVehicle(vehicle).getLocation();
     }
 
     @Override
