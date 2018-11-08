@@ -75,9 +75,11 @@ public class CustomerOrdersController {
         List<Order> orders = orderService.getOrdersOfCustomer(user.getId(), limit, offset);
         List<OrderJson> orderJsons = orders.stream().map(order -> {
             OrderJson orderJson = OrderJson.mapFromOrder(order);
-            Task task = taskService.getTaskByOrderAndStatus(order, TaskStatus.IN_PROGRESS);
-            if (task != null) {
+            try {
+                Task task = taskService.getTaskByOrderAndStatus(order, TaskStatus.IN_PROGRESS);
                 orderJson.setRouteId(task.getRouteId());
+            } catch (NotFoundException ee) {
+
             }
             return orderJson;
         }).collect(Collectors.toList());
@@ -98,9 +100,11 @@ public class CustomerOrdersController {
                 throw new UnauthorizedException(
                         String.format("Order %d not belong to customer %d", orderId, user.getId()));
             OrderJson orderJson = OrderJson.mapFromOrder(order);
-            Task task = taskService.getTaskByOrderAndStatus(order, TaskStatus.IN_PROGRESS);
-            if (task != null) {
+            try {
+                Task task = taskService.getTaskByOrderAndStatus(order, TaskStatus.IN_PROGRESS);
                 orderJson.setRouteId(task.getRouteId());
+            } catch (NotFoundException ee) {
+
             }
             return new ResponseEntity<>(new Response<>(orderJson), HttpStatus.OK);
         } catch (NotFoundException e) {
