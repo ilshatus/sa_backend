@@ -3,9 +3,14 @@ package com.idc.idc.controller.customer;
 import com.idc.idc.CurrentUser;
 import com.idc.idc.dto.form.OrderCreationForm;
 import com.idc.idc.dto.json.OrderJson;
+import com.idc.idc.exception.NotFoundException;
+import com.idc.idc.exception.UnauthorizedException;
 import com.idc.idc.model.Order;
+import com.idc.idc.model.Task;
+import com.idc.idc.model.enums.TaskStatus;
 import com.idc.idc.response.Response;
 import com.idc.idc.service.OrderService;
+import com.idc.idc.service.TaskService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -28,12 +33,17 @@ import java.util.stream.Collectors;
 @Slf4j
 public class CustomerOrdersController {
     public static final String ROOT_URL = "/v1/customer/orders";
+    public static final String ORDER_URL = "/{order_id}";
+
 
     private final OrderService orderService;
+    private final TaskService taskService;
 
     @Autowired
-    public CustomerOrdersController(OrderService orderService) {
+    public CustomerOrdersController(OrderService orderService,
+                                    TaskService taskService) {
         this.orderService = orderService;
+        this.taskService = taskService;
     }
 
     @ApiOperation(value = "Create order")
@@ -63,7 +73,40 @@ public class CustomerOrdersController {
                                                                   @RequestParam(required = false, defaultValue = "0") Integer offset,
                                                                   @AuthenticationPrincipal CurrentUser user) {
         List<Order> orders = orderService.getOrdersOfCustomer(user.getId(), limit, offset);
-        List<OrderJson> orderJsons = orders.stream().map(OrderJson::mapFromOrder).collect(Collectors.toList());
+        List<OrderJson> orderJsons = orders.stream().map(order -> {
+            OrderJson orderJson = OrderJson.mapFromOrder(order);
+            Task task = taskService.getTaskByOrderAndStatus(order, TaskStatus.IN_PROGRESS);
+            if (task != null) {
+                orderJson.setRouteId(task.getRouteId());
+            }
+            return orderJson;
+        }).collect(Collectors.toList());
         return new ResponseEntity<>(new Response<>(orderJsons), HttpStatus.OK);
+    }
+
+    @ApiOperation("Get order of customer")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "Authorization", value = "Authorization header",
+                    defaultValue = "%JWTTOKEN%", required = true, dataType = "string", paramType = "header")
+    })
+    @GetMapping(ORDER_URL)
+    public ResponseEntity<Response<OrderJson>> getOrder(@PathVariable("order_id") Long orderId,
+                                                        @AuthenticationPrincipal CurrentUser user) {
+        try {
+            Order order = orderService.getOrder(orderId);
+            if (!order.getCustomer().getId().equals(user.getId()))
+                throw new UnauthorizedException(
+                        String.format("Order %d not belong to customer %d", orderId, user.getId()));
+            OrderJson orderJson = OrderJson.mapFromOrder(order);
+            Task task = taskService.getTaskByOrderAndStatus(order, TaskStatus.IN_PROGRESS);
+            if (task != null) {
+                orderJson.setRouteId(task.getRouteId());
+            }
+            return new ResponseEntity<>(new Response<>(orderJson), HttpStatus.OK);
+        } catch (NotFoundException e) {
+            return new ResponseEntity<>(new Response<>(null, e.getMessage()), HttpStatus.NOT_FOUND);
+        } catch (UnauthorizedException e) {
+            return new ResponseEntity<>(new Response<>(null, e.getMessage()), HttpStatus.FORBIDDEN);
+        }
     }
 }
