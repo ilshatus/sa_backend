@@ -44,7 +44,7 @@ public class PersonnelRegistration {
     @PostMapping(REGISTER_OPERATOR)
     public ResponseEntity<Response<String>> registerOperator(
             @RequestParam("image_file") MultipartFile imageFile,
-            @Valid @RequestBody UserRegistrationForm userRegistrationForm,
+            @Valid @ModelAttribute UserRegistrationForm userRegistrationForm,
             BindingResult errors) {
 
         if (errors.hasErrors()) {
@@ -73,7 +73,7 @@ public class PersonnelRegistration {
     @PostMapping(REGISTER_DRIVER)
     public ResponseEntity<Response<String>> registerDriver(
             @RequestParam("image_file") MultipartFile imageFile,
-            @Valid @RequestBody UserRegistrationForm userRegistrationForm,
+            @Valid @ModelAttribute UserRegistrationForm userRegistrationForm,
             BindingResult errors) {
 
         if (errors.hasErrors()) {
