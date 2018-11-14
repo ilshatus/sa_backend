@@ -75,7 +75,7 @@ public class HeaderAuthenticationFilter extends FilterSecurityInterceptor {
                     break;
                 case OPERATOR:
                     Operator operator = userService.getOperator(user.getId());
-                    if (operator.getAdmin())
+                    if (operator.getAdmin() != null && operator.getAdmin())
                         authorityList.add(new SimpleGrantedAuthority("ADMIN"));
             }
         } catch (NotFoundException e) {

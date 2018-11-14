@@ -42,4 +42,6 @@ public class OperatorController {
         Operator operator = userService.getOperator(currentUser.getId());
         return new ResponseEntity<>(new Response<>(OperatorJson.mapFromOperator(operator)), HttpStatus.OK);
     }
+
+
 }
