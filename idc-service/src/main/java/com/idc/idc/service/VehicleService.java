@@ -15,6 +15,7 @@ public interface VehicleService {
     List<Vehicle> getVehiclesByType(VehicleType type);
     List<Pair<Long, Vehicle>> getNearestVehicles(Long orderId, Long timeToDeliver);
     Vehicle updatePositionOfVehicle(Long driverId, CurrentLocation location);
+    Pair<Integer, Integer> getNextPositionOfVehicle(Long vehicleId);
     Vehicle submitVehicle(Vehicle vehicle);
     List<Vehicle> getTracksRequiringDrivers();
     Vehicle addDriver(Long vehicleId, Long driverId);
