@@ -10,6 +10,7 @@ import com.google.firebase.messaging.Message;
 import com.idc.idc.dto.form.UserRegistrationForm;
 import com.idc.idc.exception.NotFoundException;
 import com.idc.idc.exception.RegistrationException;
+import com.idc.idc.exception.StorageException;
 import com.idc.idc.model.Task;
 import com.idc.idc.model.users.Customer;
 import com.idc.idc.model.users.Driver;
@@ -17,6 +18,7 @@ import com.idc.idc.model.users.Operator;
 import com.idc.idc.repository.CustomerRepository;
 import com.idc.idc.repository.DriverRepository;
 import com.idc.idc.repository.OperatorRepository;
+import com.idc.idc.service.ImageUploadService;
 import com.idc.idc.service.UserService;
 import com.idc.idc.util.PasswordUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -39,18 +41,21 @@ public class UserServiceImpl implements UserService {
     private OperatorRepository operatorRepository;
     private PasswordUtil passwordUtil;
     private FirebaseMessaging firebaseMessaging;
-    
+    private ImageUploadService imageUploadService;
+
     @Autowired
     public UserServiceImpl(CustomerRepository customerRepository,
                            DriverRepository driverRepository,
                            OperatorRepository operatorRepository,
                            PasswordUtil passwordUtil,
-                           FirebaseMessaging firebaseMessaging) {
+                           FirebaseMessaging firebaseMessaging,
+                           ImageUploadService imageUploadService) {
         this.customerRepository = customerRepository;
         this.driverRepository = driverRepository;
         this.operatorRepository = operatorRepository;
         this.passwordUtil = passwordUtil;
         this.firebaseMessaging = firebaseMessaging;
+        this.imageUploadService = imageUploadService;
     }
 
     @Override
@@ -90,12 +95,22 @@ public class UserServiceImpl implements UserService {
         return oneByEmail.orElseThrow(() -> new NotFoundException("Customer not found by email " + email));
     }
 
+    @Transactional
     @Override
-    public void registerOperator(UserRegistrationForm userRegistrationForm) {
+    public void registerOperator(UserRegistrationForm userRegistrationForm, byte[] image) {
         Operator operator = userRegistrationForm.toOperator();
         try {
             getOperatorByEmail(operator.getEmail());
         } catch (NotFoundException e) {
+            String url;
+            try {
+                url = imageUploadService
+                        .uploadPublicImage(image,
+                                String.format("image.%s", imageUploadService.getExtension(image)));
+            } catch (StorageException ee) {
+                throw new RegistrationException(ee.getMessage());
+            }
+            operator.setAvatarUrl(url);
             operator.setPasswordHash(passwordUtil.getHash(userRegistrationForm.getPassword()));
             submitOperator(operator);
             return;
@@ -103,12 +118,22 @@ public class UserServiceImpl implements UserService {
         throw new RegistrationException(String.format("Operator with email %s already exists", operator.getEmail()));
     }
 
+    @Transactional
     @Override
-    public void registerDriver(UserRegistrationForm userRegistrationForm) {
+    public void registerDriver(UserRegistrationForm userRegistrationForm, byte[] image) {
         Driver driver = userRegistrationForm.toDriver();
         try {
             getDriverByEmail(driver.getEmail());
         } catch (NotFoundException e) {
+            String url;
+            try {
+                url = imageUploadService
+                        .uploadPublicImage(image,
+                                String.format("image.%s", imageUploadService.getExtension(image)));
+            } catch (StorageException ee) {
+                throw new RegistrationException(ee.getMessage());
+            }
+            driver.setAvatarUrl(url);
             driver.setPasswordHash(passwordUtil.getHash(userRegistrationForm.getPassword()));
             submitDriver(driver);
             return;

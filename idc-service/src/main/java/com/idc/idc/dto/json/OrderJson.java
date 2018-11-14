@@ -1,5 +1,7 @@
 package com.idc.idc.dto.json;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.idc.idc.model.Order;
 import com.idc.idc.model.enums.OrderStatus;
@@ -39,10 +41,14 @@ public class OrderJson {
 
     private CustomerJson customer;
 
-    private CurrentLocationJson locationJson;
+    private CurrentLocationJson location;
 
     @JsonProperty("deliver_price")
     private Long deliverPrice;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JsonProperty("route_id")
+    private Long routeId;
 
     public static OrderJson mapFromOrder(Order order) {
         return OrderJson.builder()
@@ -56,7 +62,7 @@ public class OrderJson {
                 .worth(order.getWorth())
                 .description(order.getDescription())
                 .customer(CustomerJson.mapFromCustomer(order.getCustomer()))
-                .locationJson(CurrentLocationJson.mapFromCurrentLocation(order.getLocation()))
+                .location(CurrentLocationJson.mapFromCurrentLocation(order.getLocation()))
                 .deliverPrice(order.getDeliveryPrice())
                 .build();
     }

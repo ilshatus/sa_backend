@@ -12,9 +12,9 @@ import java.util.List;
 public interface UserService {
     void registerCustomer(UserRegistrationForm userRegistrationForm);
 
-    void registerOperator(UserRegistrationForm userRegistrationForm);
+    void registerOperator(UserRegistrationForm userRegistrationForm, byte[] image);
 
-    void registerDriver(UserRegistrationForm userRegistrationForm);
+    void registerDriver(UserRegistrationForm userRegistrationForm, byte[] image);
 
     Customer getCustomer(Long customerId);
 

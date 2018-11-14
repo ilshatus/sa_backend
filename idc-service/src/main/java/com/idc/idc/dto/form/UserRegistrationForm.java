@@ -59,6 +59,7 @@ public class UserRegistrationForm {
                 .builder()
                 .name(name)
                 .email(email.toLowerCase())
+                .admin(false)
                 .build();
     }
 }

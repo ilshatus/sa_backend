@@ -21,6 +21,7 @@ public class Driver extends AbstractUserEntity {
     public static final String NAME = "name";
     public static final String VEHICLE_ID = "vehicle_id";
     public static final String FIREBASE_TOKEN = "firebase_token";
+    public static final String AVATAR_URL = "avatarUrl";
 
     @Embedded
     private CurrentLocation location;
@@ -37,4 +38,7 @@ public class Driver extends AbstractUserEntity {
 
     @Column(name = FIREBASE_TOKEN)
     private String firebaseToken;
+
+    @Column(name = AVATAR_URL)
+    private String avatarUrl;
 }
