@@ -19,6 +19,8 @@ public class Task extends AbstractAuditableEntity {
     private static final String VEHICLE_ID = "vehicle_id";
     private static final String TASK_STATUS = "task_status";
     private static final String ROUTE_ID = "route_id";
+    private static final String STEP_ID = "step_id";
+    private static final String PERCENT_TRAVELLED = "percent_travelled";
 
     @ManyToOne
     @JoinColumn(name = ORDER_ID)
@@ -30,6 +32,12 @@ public class Task extends AbstractAuditableEntity {
 
     @Column(name = ROUTE_ID)
     private Long routeId;
+
+    @Column(name = STEP_ID)
+    private Long stepId;
+
+    @Column(name = PERCENT_TRAVELLED)
+    private Double percentTravelled;
 
     @Column(name = TASK_STATUS)
     @Enumerated(EnumType.STRING)

@@ -16,6 +16,10 @@ public class SimpleTaskJson {
 
     private Long routeId;
 
+    private Long stepId;
+
+    private Double percentTravelled;
+
     private TaskStatus status;
 
     public static SimpleTaskJson mapFromTask(Task task) {
@@ -24,6 +28,8 @@ public class SimpleTaskJson {
                 .id(task.getId())
                 .order(OrderJson.mapFromOrder(task.getOrder()))
                 .routeId(task.getRouteId())
+                .stepId(task.getStepId())
+                .percentTravelled(task.getPercentTravelled())
                 .status(task.getStatus())
                 .build();
     }

@@ -40,23 +40,16 @@ public class VehicleServiceImpl implements VehicleService {
     private UserService userService;
     private GeoApiContext geoApiContext;
     private OrderService orderService;
-    private TaskService taskService;
-    private VehicleService vehicleService;
-    private Date lastModified;
 
     @Autowired
     public VehicleServiceImpl(VehicleRepository vehicleRepository,
                               UserService userService,
                               GeoApiContext geoApiContext,
-                              OrderService orderService,
-                              TaskService taskService,
-                              VehicleService vehicleService) {
+                              OrderService orderService) {
         this.vehicleRepository = vehicleRepository;
         this.userService = userService;
         this.geoApiContext = geoApiContext;
         this.orderService = orderService;
-        this.taskService = taskService;
-        this.vehicleService = vehicleService;
     }
 
     @Override
@@ -122,33 +115,6 @@ public class VehicleServiceImpl implements VehicleService {
         return submitVehicle(vehicle);
     }
 
-    private CurrentLocation getNextPositionOfVehicle(Long vehicleId) {
-        Vehicle vehicle = vehicleService.getVehicle(vehicleId);
-        if (vehicle == null) {
-            throw new NotFoundException(String.format("Vehicle %d do not found", vehicleId));
-        }
-
-        CurrentLocation location = vehicle.getLocation();
-        lastModified = vehicle.getLastModifiedDate();
-        long secsSinceLastUpdate = (System.currentTimeMillis() - lastModified.getTime())/1000;
-
-        CurrentLocation destination = taskService.getTasksByVehicleAndStatus(vehicle, TaskStatus.IN_PROGRESS).get(0).getOrder().getLocation();
-        DirectionsApiRequest request = DirectionsApi.newRequest(geoApiContext)
-                .origin(new LatLng(location.getLatitude(), location.getLongitude()))
-                .destination(new LatLng(destination.getLatitude(), destination.getLongitude()));
-
-        try {
-            DirectionsResult result = request.await();
-            long dist = 0L;
-            int i = 0;
-            while (dist < 2000*secsSinceLastUpdate){  // 2 km per sec
-                dist += result.routes[0].legs[0].steps[i++].distance.inMeters;
-            }
-            vehicle.setLocation(new CurrentLocation(result.routes[0].legs[0].steps[i].endLocation.lat, result.routes[0].legs[0].steps[i].endLocation.lng));
-        } catch (Exception e){
-        }
-        return submitVehicle(vehicle).getLocation();
-    }
 
     @Override
     public Vehicle submitVehicle(Vehicle vehicle) {

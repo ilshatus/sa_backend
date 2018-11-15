@@ -20,4 +20,5 @@ public interface TaskService {
     Task submitTask(Task task);
     Task getTaskByOrderAndStatus(Order order, TaskStatus status);
     Task createTask(Long orderId, CreateTaskForm form);
+    void updatePositionOfVehicle(Long vehicleId);
 }
