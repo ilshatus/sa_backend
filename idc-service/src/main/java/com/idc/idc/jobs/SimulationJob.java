@@ -29,7 +29,7 @@ public class SimulationJob {
     public void updateLocation() {
         List<Vehicle> vehicles = vehicleService.getAllVehicles();
         for (Vehicle vehicle : vehicles) {
-            log.info("Move vehicle {}", vehicle.getId());
+            //log.info("Move vehicle {}", vehicle.getId());
             taskService.updatePositionOfVehicle(vehicle.getId());
         }
     }

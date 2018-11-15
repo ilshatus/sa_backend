@@ -47,8 +47,8 @@ public class OrderJson {
     private Long deliverPrice;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    @JsonProperty("route_id")
-    private Long routeId;
+    @JsonProperty("task")
+    private SimpleTaskJson simpleTaskJson;
 
     public static OrderJson mapFromOrder(Order order) {
         return OrderJson.builder()

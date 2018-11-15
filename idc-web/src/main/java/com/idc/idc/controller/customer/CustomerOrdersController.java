@@ -3,6 +3,7 @@ package com.idc.idc.controller.customer;
 import com.idc.idc.CurrentUser;
 import com.idc.idc.dto.form.OrderCreationForm;
 import com.idc.idc.dto.json.OrderJson;
+import com.idc.idc.dto.json.SimpleTaskJson;
 import com.idc.idc.exception.NotFoundException;
 import com.idc.idc.exception.UnauthorizedException;
 import com.idc.idc.model.Order;
@@ -77,7 +78,7 @@ public class CustomerOrdersController {
             OrderJson orderJson = OrderJson.mapFromOrder(order);
             try {
                 Task task = taskService.getTaskByOrderAndStatus(order, TaskStatus.IN_PROGRESS);
-                orderJson.setRouteId(task.getRouteId());
+                orderJson.setSimpleTaskJson(SimpleTaskJson.mapFromTask(task));
             } catch (NotFoundException ee) {
 
             }
@@ -102,7 +103,7 @@ public class CustomerOrdersController {
             OrderJson orderJson = OrderJson.mapFromOrder(order);
             try {
                 Task task = taskService.getTaskByOrderAndStatus(order, TaskStatus.IN_PROGRESS);
-                orderJson.setRouteId(task.getRouteId());
+                orderJson.setSimpleTaskJson(SimpleTaskJson.mapFromTask(task));
             } catch (NotFoundException ee) {
 
             }
